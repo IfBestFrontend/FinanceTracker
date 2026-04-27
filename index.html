@@ -3,11 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance-Tracker</title>
-    <link type="stylesheet" href="style.css">
+    <title>Финансовый трекер</title>
     <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/site-icon-stub.svg" type="image/x-icon">
 </head>
-<body>
-    
+<body class="dark">
+    <dialog id="add-edit-transaction" class="add-edit-transaction">
+        <button data-action="cancel" class="exit">x</button>
+        <h2 id="add-edit-label"> </h2>
+        <form class="transaction-form" action="">
+            <button data-action=""></button>
+            <button id="add-edit-button"></button>
+        </form>
+    </dialog>
+
+    <dialog id="settings" class="settings">
+        <button data-action="cancel" class="exit">x</button>
+        <h2>Настройки</h2>
+        <form action="">
+            <button data-action="" id="import-json">Импорт JSON</button>
+            <button data-action="" id="export-json">Экспорт JSON</button>
+        </form>
+    </dialog>
+
+    <dialog id="data-import" class="data-import">
+        <button data-action="cancel" class="exit">x</button>
+        <h2>Режим импорта</h2>
+        <form action="">
+            <button data-action="cancel" id="export-json">Отмена</button>
+            <button data-action="" id="export-json">Импортировать</button>
+        </form>
+    </dialog>
+
+    <dialog id="" class="">
+        <button data-action="cancel" class="exit">x</button>
+        <!-- Для настройки окна подтверждения действия (?) -->
+        <!-- На доп разработке -->
+    </dialog>
+
+    <header class="header">
+        <div class="logo"></div>
+        <div class="buttons"></div>
+    </header>
+    <main>
+        <section class="charts">
+            <div id="expense-chart" class="has-bg-element"></div>
+            <div id="balance-chart" class="has-bg-element"></div>
+            <div id="chart-legend" class="has-bg-element"></div>
+        </section>
+        <section id="filter" class="filter has-bg-element">
+            <form action="">
+                <button id="comment-found"></button>
+            </form>
+        </section>
+        <section class="list-transactions">
+            <div class="transaction-container has-bg-element"></div>
+            <button id="show-more">Показать ещё</button>
+        </section>
+    </main>
+    <footer>
+        <!-- Пока пустует -->
+    </footer>
 </body>
 </html>
