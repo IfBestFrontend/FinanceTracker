@@ -9,12 +9,46 @@
     <link rel="icon" href="assets/site-icon-stub.svg" type="image/x-icon">
 </head>
 <body class="dark">
-    <dialog id="add-edit-transaction" class="add-edit-transaction">
+    <dialog id="addEditTransaction" class="add-edit-transaction">
         <button data-action="cancel" class="exit">x</button>
-        <h2 id="add-edit-label"> </h2>
+        <h2 id="add-edit-label">Тест</h2>
         <form class="transaction-form" action="">
-            <button data-action=""></button>
-            <button id="add-edit-button"></button>
+            <label>Тип</label>
+            
+            <div class="two-buttons">
+                <button data-action="" id="income-btn" class="transation-categorie-btn income-btn">↑ Доходы</button>
+                <button data-action="" id="expense-btn" class="transation-categorie-btn expense-btn">↓ Расходы</button>
+            </div>
+
+            <div class="label-input">
+                <label>Сумма транзакции</label>
+                <input>
+            </div>
+
+            <div class="label-input">
+                <label>Категория</label>
+                <select>
+                    <option selected disabled hidden>Выберите категорию</option>
+                    <option>Категория 1</option>
+                    <option>Категория 2</option>
+                    <option>Категория 3</option>
+                </select>
+            </div>
+
+            <div class="label-input">
+                <label>Дата транзакции</label>
+                <input>
+            </div>
+            
+            <div class="label-input">
+                <label>Комментарий</label>
+                <textarea placeholder="Введите комментарий (необязательно)"></textarea>
+            </div>
+            
+            <div class="two-buttons">
+                <button>Отмена</button>
+                <button>Обновить</button>
+            </div>
         </form>
     </dialog>
 
@@ -42,24 +76,237 @@
         <!-- На доп разработке -->
     </dialog>
 
-    <header class="header">
-        <div class="logo"></div>
-        <div class="buttons"></div>
+     <header class="header">
+        <div class="header__left">
+            <div class="logo"></div>
+            <h1 class="header__title">Финансовый трекер</h1>
+        </div>
+
+        <button class="settings-button" type="button" onclick="window.settings.showModal()"
+            aria-label="Открыть настройки">
+            <img src="assets/Cog SVG Icon.svg" alt="" class="settings-icon">
+        </button>
     </header>
     <main>
-        <section class="charts">
-            <div id="expense-chart" class="has-bg-element"></div>
-            <div id="balance-chart" class="has-bg-element"></div>
-            <div id="chart-legend" class="has-bg-element"></div>
+        <section class="charts has-section-padding">
+            <div id="expense-chart" class="chart chart-pie has-bg-element">
+                <div class="chart-stub">Место под диаграмму</div>
+            </div>
+
+            <div id="balance-chart" class="chart chart-line has-bg-element">
+                <div class="chart-stub">Место под график</div>
+            </div>
+
+            <div id="chart-legend" class="chart-legend has-bg-element">
+                <span class="legend-stats">
+                    <span class="legend-stat"><span class="legend-stat__label">За 7 дней:</span></span>
+                    <span class="legend-stat"><span class="legend-stat__label">Доходы:</span><span
+                            class="legend-stat__value income">100000.00₽</span></span>
+                    <span class="legend-stat"><span class="legend-stat__label">Расходы:</span><span
+                            class="legend-stat__value expense">100000.00₽</span></span>
+                    <span class="legend-stat"><span class="legend-stat__label">Остаток:</span><span
+                            class="legend-stat__value balance">100000.00₽</span></span>
+                </span>
+
+                <div class="legend-line"></div>
+
+                <span class="legend-list">
+                    <span class="legend-item legend-food"><span class="legend-dot"></span><span
+                            class="legend-title">Еда</span></span>
+                    <span class="legend-item legend-transport"><span class="legend-dot"></span><span
+                            class="legend-title">Транспорт</span></span>
+                    <span class="legend-item legend-entertainment"><span class="legend-dot"></span><span
+                            class="legend-title">Развлечения</span></span>
+                    <span class="legend-item legend-health"><span class="legend-dot"></span><span
+                            class="legend-title">Здоровье</span></span>
+                    <span class="legend-item legend-house"><span class="legend-dot"></span><span
+                            class="legend-title">Жильё</span></span>
+                    <span class="legend-item legend-custom"><span class="legend-dot"></span><span
+                            class="legend-title">Кастомная</span></span>
+                    <span class="legend-item legend-custom"><span class="legend-dot"></span><span
+                            class="legend-title">Кастомная</span></span>
+
+                </span>
+            </div>
         </section>
         <section id="filter" class="filter has-bg-element">
-            <form action="">
-                <button id="comment-found"></button>
+            <div class="filter__top">
+                <div class="filter__top__sort">
+
+                    <div class="filter__group">
+                        <span class="filter__label">Сортировать:</span>
+                        <button type="button" class="filter__sort-arrow">↑</button>
+
+                        <select class="filter__select">
+                            <option>ABC</option>
+                            <option>По дате</option>
+                            <option>По сумме</option>
+                        </select>
+                    </div>
+
+                    <div class="filter__group">
+                        <span class="filter__label">Тип:</span>
+                        <select class="filter__select">
+                            <option>Всё</option>
+                            <option>Доход</option>
+                            <option>Расход</option>
+                        </select>
+                    </div>
+
+                    <div class="filter__group">
+                        <span class="filter__label">Категории:</span>
+                        <select class="filter__select">
+                            <option>Выбрать</option>
+                            <option>Еда</option>
+                            <option>Транспорт</option>
+                            <option>Развлечения</option>
+                            <option>Здоровье</option>
+                            <option>Жильё</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter__top__dates">
+                    <div class="filter__group filter__dates">
+                        <span class="filter__label">с:</span>
+                        <input type="date" class="filter__date" placeholder=" __.__.____">
+                        <span class="filter__label">по:</span>
+                        <input type="date" class="filter__date" placeholder=" __.__.____">
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter__tags">
+                <div class="tag tag--green">Еда <button class="btn__del">×</button></div>
+                <div class="tag tag--blue">Транспорт <button class="btn__del">×</button></div>
+                <div  class="tag tag--orange">Развлечения <button class="btn__del">×</button></div>
+                <div type="button" class="tag tag--yellow">Здоровье <button class="btn__del">×</button></div>
+                <div type="button" class="tag tag--purple">Жильё <button class="btn__del">×</button></div>
+                <div type="button" class="tag tag--teal">Кастомная <button class="btn__del__cos">×</button></div>
+                <div type="button" class="tag tag--teal">Кастомная <button class="btn__del__cos">×</button></div>
+                <div type="button" class="tag tag--teal">Кастомная <button class="btn__del__cos">×</button></div>
+            </div>
+            <form class="filter__search" action="">
+                <input type="text" name="comment-find" placeholder="Комментарий">
+                <button id="comment-found">
+                    <img src="assets\Лупа___.png" alt="">
+                </button>
             </form>
         </section>
-        <section class="list-transactions">
-            <div class="transaction-container has-bg-element"></div>
+        <section class="transactions">
+            <div class="transaction-list">
+                <div class="transaction transaction--expense">
+                    <div class="transaction__left">
+                        <div class="transaction__dot"></div>
+                        <div class="transaction__amount">-3390.00 ₽</div>
+                        <div class="transaction__divider"></div>
+                        <div class="transaction__title">Продукты К4</div>
+                    </div>
+
+                    <div class="transaction__right">
+                        <div class="transaction__date">ДД.ММ.ГГГГ</div>
+                        <button class="transaction__edit" type="button" aria-label="Редактировать">
+                            <img src="assets\Edit Tool Pencil SVG Icon.svg" alt="">
+                        </button>
+                        <button class="transaction__delete" type="button" aria-label="Удалить">
+                            <img src="assets\trash 1.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="transaction transaction--expense">
+                    <div class="transaction__left">
+                        <div class="transaction__dot"></div>
+                        <div class="transaction__amount">-3390.00 ₽</div>
+                        <div class="transaction__divider"></div>
+                        <div class="transaction__title">Продукты К4</div>
+                    </div>
+
+                    <div class="transaction__right">
+                        <div class="transaction__date">ДД.ММ.ГГГГ</div>
+                        <button class="transaction__edit" type="button" aria-label="Редактировать">
+                            <img src="assets\Edit Tool Pencil SVG Icon.svg" alt="">
+                        </button>
+                        <button class="transaction__delete" type="button" aria-label="Удалить">
+                            <img src="assets\trash 1.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="transaction transaction--expense">
+                    <div class="transaction__left">
+                        <div class="transaction__dot"></div>
+                        <div class="transaction__amount">-3390.00 ₽</div>
+                        <div class="transaction__divider"></div>
+                        <div class="transaction__title">Продукты К4</div>
+                    </div>
+
+                    <div class="transaction__right">
+                        <div class="transaction__date">ДД.ММ.ГГГГ</div>
+                        <button class="transaction__more" type="button">
+                            <img class="transaction__more__dot" src="assets\svg (3).svg" alt="">
+                        </button>
+                        <button class="transaction__edit" type="button" aria-label="Редактировать">
+                            <img src="assets\Edit Tool Pencil SVG Icon.svg" alt="">
+                        </button>
+                        <button class="transaction__delete" type="button" aria-label="Удалить">
+                            <img src="assets\trash 1.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="transaction transaction--expense transaction--expanded">
+                    <div class="transaction__left">
+                        <div class="transaction__dot"></div>
+                        <div class="transaction__amount">-3390.00 ₽</div>
+                        <div class="transaction__divider"></div>
+                        <div class="transaction__title">Продукты К4</div>
+                    </div>
+
+                    <div class="transaction__right">
+                        <div class="transaction__date">ДД.ММ.ГГГГ</div>
+                        <button class="transaction__more" type="button">
+                            <img src="assets\-keyboard-arrow-down_90691 1.svg" alt="">
+                        </button>
+                        <button class="transaction__edit" type="button" aria-label="Редактировать">
+                            <img src="assets\Edit Tool Pencil SVG Icon.svg" alt="">
+                        </button>
+                        <button class="transaction__delete" type="button" aria-label="Удалить">
+                            <img src="assets\trash 1.svg" alt="">
+                        </button>
+                    </div>
+
+                    <div class="transaction__note">
+                        Тут есть текст, и тут его много-много*
+                    </div>
+                </div>
+
+                <div class="transaction transaction--income transaction--expanded">
+                    <div class="transaction__left">
+                        <div class="transaction__dot"></div>
+                        <div class="transaction__amount">+100000.00 ₽</div>
+                        <div class="transaction__divider"></div>
+                    </div>
+                    <div class="transaction__right">
+                        <div class="transaction__date">ДД.ММ.ГГГГ</div>
+                        <button class="transaction__more" type="button">
+                            <img src="assets\-keyboard-arrow-down_90691 1.svg" alt="">
+                        </button>
+                        <button class="transaction__edit" type="button" aria-label="Редактировать">
+                            <img src="assets\Edit Tool Pencil SVG Icon.svg" alt="">
+                        </button>
+                        <button class="transaction__delete" type="button" aria-label="Удалить">
+                            <img src="assets\trash 1.svg" alt="">
+                        </button>
+                    </div>
+                    <div class="transaction__note">
+                        Тут есть текст, и тут его много-много*
+                    </div>
+                </div>
+            </div>
             <button id="show-more">Показать ещё</button>
+    <!-- Затычка: -->
+            <button type="button" onclick="window.addEditTransaction.showModal()">Добавить/редактировать</button>
+                        <button class="floating-add" type="button" aria-label="Добавить транзакцию">+</button>
         </section>
     </main>
     <footer>
