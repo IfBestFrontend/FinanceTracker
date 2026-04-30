@@ -28,7 +28,7 @@ yarn-error.log*
 # ====================
 
 # Если преподаватель требует ТОЛЬКО чистый JS без конфигов:
-# package.json
-# package-lock.json
-# eslint.config.js
-# .prettierrc
+package.json
+package-lock.json
+eslint.config.js
+.prettierrc
