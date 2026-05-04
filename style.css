@@ -113,11 +113,14 @@ main {
     background-color: var(--element--bg-color);
 }
 
+dialog {
+    position: relative;
+}
 
 
 /* Элементы общего использования */
 
-.exit {
+.close-dialog-button {
     position: absolute;
     top: 24px;
     right: 28px;
@@ -127,11 +130,13 @@ main {
     font-size: 28px;
 }
 
-.exit img {
+.close-dialog-button img {
     width: 18px;
     height: 18px;
     filter: invert(1);
 }
+
+
 
 
 /* Отдельные элементы */
@@ -850,15 +855,8 @@ main {
     overflow-wrap: anywhere;
 }
 
-.settings {
-    width: 770px;
-    min-height: 333px;
-    border-radius: 0;
-    padding: 36px 30px 21px;
-    overflow: visible;
-}
 
-.exit {
+.close-dialog-button {
     width: 24px;
     height: 24px;
     top: 30px;
@@ -869,10 +867,20 @@ main {
     justify-content: center;
 }
 
-.exit img {
+.close-dialog-button img {
     width: 18px;
     height: 18px;
     filter: invert(1);
+}
+
+.settings {
+    width: 770px;
+    min-height: 333px;
+    border-radius: 0;
+    padding: 36px 30px 21px;
+    overflow: visible;
+    flex-direction: column;
+    display: flex;
 }
 
 .settings__title {
@@ -943,7 +951,7 @@ main {
 }
 
 .settings__bottom {
-    margin-top: -29px;
+    /* margin-top: -29px; */
 }
 /*  */
 

@@ -10,6 +10,13 @@ const UI_TEXT = {
     // Для nnn
 };
 
+const actions = {
+    "close-dialog": (e) => СloseDialog(e),
+    "open-edit-transaction": (id) => OpenEditTransaction(id),
+    "delete-transaction": (id) => DeleteTransactions(id),
+    "toggle-theme": () => ToggleTheme(),
+};
+
 // let modal = getQwe
 
 const LOCALSTORAGE_KEY = {
@@ -176,6 +183,12 @@ function CheckBaseCategory() {
     // !!!
 }
 
+function СloseDialog(e) {}
+
+function OpenEditTransaction(){
+
+}
+
 //Основные функции
 
 function ShowMoreTransactions() {}
@@ -186,13 +199,16 @@ function AddTransaction(type, summ, category, date, comment) {
     UpdateLocalStorageTransactions();
 }
 
-function EditTransaction(list_id, type, summ, category, date, comment) {
+function EditTransaction(id, type, summ, category, date, comment) {
     // !!!
-    // Некоректная логика, на доделку
+
     // !!!
-    transactions[list_id] = CollectTransactionObject(type, summ, category, date, comment);
     // Конец функции:
     UpdateLocalStorageTransactions();
+}
+
+function DeleteTransactions(id) {
+
 }
 
 function AddCategory(name, hex) {
@@ -253,6 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // CreateDemoTransaction();
     LoadCategories();
     LoadTransactions();
+    filteredTransactions = transactions;
 
     StateLog();
 });
