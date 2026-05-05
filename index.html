@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Финансовый трекер</title>
         <script src="script.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" href="assets/site-icon-stub.svg" type="image/x-icon" />
         <!-- <script>
@@ -13,6 +14,7 @@
         </script> -->
     </head>
     <body class="dark">
+        <script src="chart.js" defer></script>
         <template id="transaction">
             <div class="transaction has-bg-element" data-id="">
                 <div class="transaction__top">
@@ -219,7 +221,9 @@
                 </div>
 
                 <div id="balance-chart" class="chart chart-line has-bg-element">
-                    <div class="chart-stub">Место под график</div>
+                    <div class="chart-inner">
+                        <canvas id="balanceChart"></canvas>
+                    </div>
                 </div>
 
                 <div id="chart-legend" class="chart-legend has-bg-element">

@@ -691,6 +691,24 @@ dialog {
 /* sub-класс */
 }
 
+.chart {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+}
+
+.chart-inner {
+    width: 100%;
+    max-width: 850px;
+    height: 250px;
+}
+
+.chart-inner canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .legend-line {
     width: 85%;
     height: 1px;
