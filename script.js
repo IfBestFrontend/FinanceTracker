@@ -10,12 +10,15 @@ const UI_TEXT = {
     // Для nnn
 };
 
-const actions = {
-    "close-dialog": (e) => СloseDialog(e),
-    "open-edit-transaction": (id) => OpenEditTransaction(id),
-    "delete-transaction": (id) => DeleteTransactions(id),
+const action = {
+    "close-dialog": () => CloseDialog(),
+    "open-edit-transaction": (ctx) => OpenEditTransaction(ctx.id),
+    "delete-transaction": (ctx) => DeleteTransactions(ctx.id),
     "toggle-theme": () => ToggleTheme(),
-};
+    "show-more": () => ShowMoreTransactions(),
+    "open-settings": () => OpenSettings(),
+}
+
 
 // let modal = getQwe
 
@@ -31,7 +34,7 @@ const TRANSACTION = {
     SUMM: "summ", // Только положительное
     CATEGORY: "category", // может быть пустым
     DATE: "date", // хранится в миллисикундах (количество миллисекунд, прошедших с 1 января 1970 года 00:00:00 по UTC до указанной даты)
-    COMMENT: "comment", // Любой длинны (пока всёравно)
+    COMMENT: "comment", // Любой длинны (пока всё равно)
 };
 
 const CATEGORY = {
@@ -183,8 +186,13 @@ function CheckBaseCategory() {
     // !!!
 }
 
-function СloseDialog(e) {}
+function CloseDialog(e) {}
 
+function OpenSettings() {
+    const dialog = document.getElementById('settings');
+    if (dialog) dialog.showModal(); 
+
+}
 function OpenEditTransaction(){
 
 }
@@ -233,6 +241,12 @@ function RenderBalanceChart(day) {
     let nDaysTransaction = CreateNDayTransactionList(day);
 }
 
+function ToggleTheme() {
+
+}
+
+
+
 //Отладка
 function StateLog() {
     console.log(`StateLog: проверка актиальных данных.`);
@@ -240,6 +254,8 @@ function StateLog() {
     console.log(`categories: `, categories);
     console.log(`transactions: `, transactions);
     console.log(`BASE_CATEGORIES: `, BASE_CATEGORIES);
+    console.log(`filteredTransactions: `, filteredTransactions);
+    console.log(`g_currentOutputTransaction: `, g_currentOutputTransaction)
     console.log(`--- Актуальные для отладки значения закончились ---`);
 }
 
@@ -270,6 +286,31 @@ document.addEventListener("DOMContentLoaded", () => {
     LoadCategories();
     LoadTransactions();
     filteredTransactions = transactions;
-
+    
     StateLog();
-});
+    // return;
+    
+    
+    
+    
+    
+    // События
+    
+    // Если что-то работает не так - писать в общий чат, разобъём обратно на отдельные функции списки
+    function delegate(actionsMap) {
+        return (e) => {
+            const btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            const item = btn.closest('[data-id]');
+            const ctx = { e, id: item?.dataset.id, ...btn.dataset };
+            const name = btn.dataset.action;
+            if (actionsMap[name]) actionsMap[name](ctx);
+        };
+    }
+
+    document.getElementById('header').addEventListener('click', delegate(action));
+
+    document.getElementById('transactionsList').addEventListener('click', (action));
+
+
+})

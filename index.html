@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Финансовый трекер</title>
-        <script src="script.js"></script>
+        <script src="script.js" defer></script>
         <link rel="stylesheet" href="style.css" />
         <link rel="icon" href="assets/site-icon-stub.svg" type="image/x-icon" />
         <!-- <script>
@@ -14,10 +14,7 @@
     </head>
     <body class="dark">
         <template id="transaction">
-            <div 
-                class="transaction has-bg-element" 
-                data-id=""
-            >
+            <div class="transaction has-bg-element" data-id="">
                 <div class="transaction__top">
                     <div class="transaction__left">
                         <span class="transaction__dot"></span>
@@ -27,11 +24,7 @@
                     </div>
                     <div class="transaction__right">
                         <div class="transaction__date"></div>
-                        <button 
-                            class="transaction__more" 
-                            type="button"
-                            data-action="show-comment"
-                        >
+                        <button class="transaction__more" type="button" data-action="show-comment">
                             <img src="assets\-keyboard-arrow-down_90691 1.svg" alt="" />
                         </button>
                         <button
@@ -42,19 +35,23 @@
                         >
                             <img src="assets\Edit Tool Pencil SVG Icon.svg" alt="" />
                         </button>
-                        <button 
-                            class="transaction__delete" 
-                            type="button" 
-                            aria-label="Удалить" 
+                        <button
+                            class="transaction__delete"
+                            type="button"
+                            aria-label="Удалить"
                             data-action="delete-transaction"
                         >
                             <img src="assets\trash 1.svg" alt="" />
                         </button>
                     </div>
                 </div>
-                <p class="transaction__note">
-                    Тут есть текст, и тут его много-много*
-                </p>
+                <p class="transaction__note">Тут есть текст, и тут его много-много*</p>
+            </div>
+        </template>
+        <template id="">
+            <div type="button" class="tag tag--yellow">
+                <span data-category></span>
+                <button class="btn__del">×</button>
             </div>
         </template>
         <dialog id="addEditTransaction" class="add-edit-transaction">
@@ -114,8 +111,14 @@
 
         <dialog id="settings" class="dialog-conteiner">
             <div class="settings">
-                <button class="close-dialog-button" type="button" onclick="window.settings.close()" aria-label="Закрыть настройки">
-                    <img src="assets/cancel-close-cross-delete_114048.svg" alt="">
+                <!--  -->
+                <button
+                    class="close-dialog-button"
+                    type="button"
+                    onclick="window.settings.close()"
+                    aria-label="Закрыть настройки"
+                >
+                    <img src="assets/cancel-close-cross-delete_114048.svg" alt="" />
                 </button>
                 <h2 class="settings__title">Настройки</h2>
                 <!-- <div class="settings__row settings__categories">
@@ -138,20 +141,42 @@
                 <form class="settings__form" action="">
                     <div class="settings__add">
                         <label for="category-name">Добавить категорию:</label>
-                        <input id="category-name" type="text" placeholder="Название">
-                        <button type="button" class="choose-color choose-color--color" aria-label="Выбрать цвет"></button>
-                        <button type="button" class="choose-color" aria-label="Добавить категорию">+</button>
+                        <input id="category-name" type="text" placeholder="Название" />
+                        <button
+                            type="button"
+                            class="choose-color choose-color--color"
+                            aria-label="Выбрать цвет"
+                        ></button>
+                        <button type="button" class="choose-color" aria-label="Добавить категорию">
+                            +
+                        </button>
                     </div>
                 </form>
+                
                 <div class="settings__theme">
                     <span class="settings__text">Тёмная тема</span>
-                    <button data-action="toggle-theme" type="button" class="theme-toggle" aria-label="Переключить тёмную тему">
-                        <img src="assets/on_toggle_icon_214059.svg" alt="">
+                    <button
+                        data-action="toggle-theme"
+                        type="button"
+                        class="theme-toggle"
+                        aria-label="Переключить тёмную тему"
+                    >
+                        <img src="assets/on_toggle_icon_214059.svg" alt="" />
                     </button>
-                    <input type="checkbox">
+                    <!-- <input type="checkbox" >
+                     <label class="theme-toggle" data-action="toggle-theme" aria-label="Переключить тему">
+                        <input type="checkbox" checked>
+                        <span class="toggle-slider"></span>
+                    </label> -->
+                    <!-- <div class="test">
+                        <label for=""></label>
+                        <div class="test2"><input type="checkbox" class="checkbox-toggle" /></div>
+                    </div> -->
                 </div>
                 <div class="settings__bottom">
-                    <button type="button" class="default-button default-button--secondary">Импорт JSON</button>
+                    <button type="button" class="default-button default-button--secondary">
+                        Импорт JSON
+                    </button>
                     <button type="button" class="default-button">Экспорт JSON</button>
                 </div>
             </div>
@@ -172,7 +197,7 @@
             <!-- На доп разработке -->
         </dialog>
 
-        <header class="header">
+        <header class="header" id="header">
             <div class="header__left">
                 <div class="logo"></div>
                 <h1 class="header__title">Финансовый трекер</h1>
@@ -181,7 +206,7 @@
             <button
                 class="settings-button"
                 type="button"
-                onclick="window.settings.showModal()"
+                data-action="open-settings"
                 aria-label="Открыть настройки"
             >
                 <img src="assets/Cog SVG Icon.svg" alt="" class="settings-icon" />
@@ -324,15 +349,19 @@
                     </button>
                 </form>
             </section>
-            <section class="transactions" >
-                <div class="transaction-list">
-                </div>
+            <section class="transactions">
+                <div class="transaction-list"></div>
                 <button id="show-more" data-action="show-more">Показать ещё</button>
                 <!-- Затычка: -->
                 <button type="button" onclick="window.addEditTransaction.showModal()">
                     Добавить/редактировать
                 </button>
-                <button class="floating-add" type="button" aria-label="Добавить транзакцию" data-action="">
+                <button
+                    class="floating-add"
+                    type="button"
+                    aria-label="Добавить транзакцию"
+                    data-action=""
+                >
                     +
                 </button>
             </section>
