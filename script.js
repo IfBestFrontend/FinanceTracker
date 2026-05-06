@@ -1,5 +1,6 @@
 // Глобальные переменные и константы
 
+
 const UI_TEXT = {
     // Для add-edit-transaction
     transaction_editTitle: "Редактирование транзакции",
@@ -65,7 +66,12 @@ let categories = [];
 let filteredCategories = [];
 
 let g_currentOutputTransaction = 0;
+const TRANSACTIONS_BATCH_SIZE = 5;
 let g_maxOutputTransaction = 0;
+
+const actions = {
+    "show-comment": (ctx) => ToggleComment(ctx.id),
+};
 
 //основные вспомогательные функции
 
@@ -198,8 +204,111 @@ function OpenEditTransaction(){
 }
 
 //Основные функции
+function ShowMoreTransactions(count) {
+    if (g_currentOutputTransaction >= filteredTransactions.length) {
+        const btn = document.getElementById('show-more');
+        if (btn) btn.style.display = 'none';
+        console.warn('ShowMoreTransactions: все транзакции уже показаны');
+        return;
+    }
 
-function ShowMoreTransactions() {}
+    const remaining = filteredTransactions.length - g_currentOutputTransaction;
+    const toShow = Math.min(count, remaining);
+    if (toShow <= 0) return;
+
+    const container = document.querySelector('.transaction-list');
+    const template = document.getElementById('transaction');
+    if (!container || !template) {
+        console.error('Не найден контейнер или шаблон');
+        return;
+    }
+
+    filteredTransactions
+        .slice(g_currentOutputTransaction, g_currentOutputTransaction + toShow)
+        .forEach(tr => {
+            const clone = template.content.cloneNode(true);
+            const div = clone.querySelector('.transaction');
+            if (!div) return;
+
+            div.dataset.id = tr[TRANSACTION.ID];
+
+            // dot
+            const dot = clone.querySelector('.transaction__dot');
+            if (dot) {
+                const dotColor = tr[TRANSACTION.TYPE] === 'expense' ? '#ff3b3b' : '#4ea3ff';
+                dot.style.setProperty('--dot-color', dotColor);
+            }
+
+            // amount
+            const amountEl = clone.querySelector('.transaction__amount');
+            if (amountEl) {
+                const sign = tr[TRANSACTION.TYPE] === 'income' ? '+' : '-';
+                amountEl.textContent = `${sign} ${tr[TRANSACTION.SUMM].toFixed(2)} ₽`;
+            }
+
+            // category
+            const catEl = clone.querySelector('.transaction__category');
+            if (catEl) {
+                if (tr[TRANSACTION.TYPE] === 'expense' && tr[TRANSACTION.CATEGORY]) {
+                    const cat = categories.find(c => c[CATEGORY.ID] === tr[TRANSACTION.CATEGORY]);
+                    catEl.textContent = cat ? cat[CATEGORY.NAME] : '';
+                    catEl.style.display = '';
+                } else {
+                    catEl.style.display = 'none';
+                }
+            }
+
+            // date
+            const dateEl = clone.querySelector('.transaction__date');
+            if (dateEl) {
+                dateEl.textContent = new Date(tr[TRANSACTION.DATE]).toLocaleDateString('ru-RU');
+            }
+
+            // note
+            const noteEl = clone.querySelector('.transaction__note');
+            const moreBtn = clone.querySelector('.transaction__more');
+            if (noteEl) {
+                if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== '') {
+                    noteEl.textContent = tr[TRANSACTION.COMMENT];
+                    noteEl.classList.remove('hidden'); // видим
+                } else {
+                    noteEl.textContent = ''; 
+                    noteEl.classList.add('hidden');
+                    if (moreBtn) moreBtn.style.display = 'none'; 
+                }
+            }
+
+            container.appendChild(clone);
+        });
+
+    g_currentOutputTransaction += toShow;
+    const showMoreBtn = document.getElementById('show-more');
+    if (showMoreBtn) {
+        showMoreBtn.style.display = g_currentOutputTransaction >= filteredTransactions.length ? 'none' : 'block';
+    }
+}
+
+function ToggleComment(transactionId) {
+    const transaction = document.querySelector(`.transaction[data-id="${transactionId}"]`);
+    if (!transaction) return;
+    const note = transaction.querySelector('.transaction__note');
+    const button = transaction.querySelector('.transaction__more');
+    if (!note) return;
+    if (!note.textContent.trim()) return;
+
+    note.classList.toggle('hidden');
+
+    if (button) {
+        const img = button.querySelector('img');
+        if (img) {
+            if (img.style.transform === 'rotate(180deg)') {
+                img.style.transform = '';
+            } else {
+                img.style.transform = 'rotate(180deg)';
+            }
+        }
+    }
+}
 
 function AddTransaction(type, summ, category, date, comment) {
     transactions.push(CollectTransactionObject(type, summ, category, date, comment));
@@ -228,13 +337,13 @@ function AddCategory(name, hex) {
 //Отрисовка и сабы отрисовки (до сортировки)
 //
 
-function CreateExpenseList(list) {}
+function CreateExpenseList(list) { }
 
 function RenderExpenseChart() {
     const EXPENSE_LIST = CreateExpenseList(filteredTransactions);
 }
 
-function CreateNDayTransactionList(day) {}
+function CreateNDayTransactionList(day) { }
 
 function RenderBalanceChart(day) {
     // было: N_DAY_TRANSACTION_LIST
@@ -285,8 +394,35 @@ document.addEventListener("DOMContentLoaded", () => {
     // CreateDemoTransaction();
     LoadCategories();
     LoadTransactions();
-    filteredTransactions = transactions;
-    
+
+    // Инициализация пагинации
+    filteredTransactions = [...transactions];
+    g_currentOutputTransaction = 0;
+
+    ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
+
+    const showMoreBtn = document.getElementById('show-more');
+    if (showMoreBtn) {
+        showMoreBtn.onclick = () => ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
+    }
+
+    const transactionsContainer = document.querySelector('.transaction-list');
+    if (transactionsContainer) {
+        transactionsContainer.addEventListener('click', (event) => {
+            const btn = event.target.closest('[data-action]');
+            if (!btn) return;
+            const actionName = btn.getAttribute('data-action');
+            const actionFn = actions[actionName];
+            if (actionFn) {
+                const transaction = btn.closest('.transaction');
+                if (transaction) {
+                    const ctx = { id: transaction.dataset.id, element: transaction };
+                    actionFn(ctx);
+                }
+            }
+        });
+    }
+
     StateLog();
     // return;
     
