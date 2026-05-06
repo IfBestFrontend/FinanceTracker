@@ -50,63 +50,75 @@
                 <p class="transaction__note">Тут есть текст, и тут его много-много*</p>
             </div>
         </template>
-        <template id="">
-            <div type="button" class="tag tag--yellow">
-                <span data-category></span>
-                <button class="btn__del">×</button>
+        <template id="category-item">
+            <div type="button" class="category-item" data-id="">
+                <span data-field="name"></span>
+                <button data-action="" aria-label="" class="btn__del">×</button>
             </div>
         </template>
         <dialog id="addEditTransaction" class="add-edit-transaction">
             <button data-action="close-dialog" class="close-dialog-button">x</button>
             <h2 id="add-edit-label">Тест</h2>
+            <!-- добавить data-id в режиме редактирования -->
             <form class="transaction-form" action="">
                 <label>Тип</label>
 
-                <div class="two-buttons">
-                    <button
-                        data-action=""
-                        id="income-btn"
-                        class="transation-categorie-btn income-btn"
-                    >
-                        ↑ Доходы
-                    </button>
-                    <button
-                        data-action=""
-                        id="expense-btn"
-                        class="transation-categorie-btn expense-btn"
-                    >
-                        ↓ Расходы
-                    </button>
+                <div class="type-toggle two-buttons">
+                    <input
+                        type="radio"
+                        name="type"
+                        id="form-transaction-type-income"
+                        value="income"
+                        hidden
+                    />
+                    <label for="form-transaction-type-income" class="type-btn">↑ Доходы</label>
+
+                    <input
+                        type="radio"
+                        name="type"
+                        id="form-transaction-type-expense"
+                        value="expense"
+                        hidden
+                        required
+                    />
+                    <label for="form-transaction-type-expense" class="type-btn">↓ Расходы</label>
                 </div>
 
                 <div class="label-input">
-                    <label>Сумма транзакции</label>
-                    <input />
+                    <label for="form-transaction-summ">Сумма транзакции</label>
+                    <input
+                        id="form-transaction-summ"
+                        name="summ"
+                        type="number"
+                        step="0.01"
+                        required
+                    />
                 </div>
 
                 <div class="label-input">
-                    <label>Категория</label>
-                    <select>
+                    <label for="form-transaction-category">Категория</label>
+                    <select id="form-transaction-category" name="category">
                         <option selected disabled hidden>Выберите категорию</option>
-                        <option>Категория 1</option>
-                        <option>Категория 2</option>
-                        <option>Категория 3</option>
                     </select>
                 </div>
 
                 <div class="label-input">
-                    <label>Дата транзакции</label>
-                    <input />
+                    <label for="form-transaction-date">Дата транзакции</label>
+                    <input id="form-transaction-date" type="date" name="date" required />
                 </div>
 
                 <div class="label-input">
-                    <label>Комментарий</label>
-                    <textarea placeholder="Введите комментарий (необязательно)"></textarea>
+                    <label for="form-transaction-comment">Комментарий</label>
+                    <textarea
+                        id="form-transaction-comment"
+                        placeholder="Введите комментарий (необязательно)"
+                        name="comment"
+                    ></textarea>
                 </div>
 
                 <div class="two-buttons">
-                    <button>Отмена</button>
-                    <button>Обновить</button>
+                    <button data-action="close-dialog" type="button">Отмена</button>
+                    <button data-action="" type="submit">Обновить</button>
                 </div>
             </form>
         </dialog>
@@ -154,7 +166,7 @@
                         </button>
                     </div>
                 </form>
-                
+
                 <div class="settings__theme">
                     <span class="settings__text">Тёмная тема</span>
                     <button
@@ -324,7 +336,7 @@
                     </div>
                 </div>
 
-                <div class="filter__tags">
+                <div class="filter__tags" id="filter-categories-list">
                     <div class="tag tag--green">Еда <button class="btn__del">×</button></div>
                     <div class="tag tag--blue">Транспорт <button class="btn__del">×</button></div>
                     <div class="tag tag--orange">
