@@ -91,6 +91,7 @@
                         name="summ"
                         type="number"
                         step="0.01"
+                        min="0.01"
                         required
                     />
                 </div>
@@ -155,12 +156,13 @@
                 <form class="settings__form" action="">
                     <div class="settings__add">
                         <label for="category-name">Добавить категорию:</label>
-                        <input id="category-name" type="text" placeholder="Название" />
-                        <button
-                            type="button"
+                        <input name="name" id="category-name" type="text" placeholder="Название" />
+                        <input
+                            name="hex"
+                            type="color"
                             class="choose-color choose-color--color"
                             aria-label="Выбрать цвет"
-                        ></button>
+                        />
                         <button type="button" class="choose-color" aria-label="Добавить категорию">
                             +
                         </button>
@@ -168,24 +170,13 @@
                 </form>
 
                 <div class="settings__theme">
-                    <span class="settings__text">Тёмная тема</span>
-                    <button
-                        data-action="toggle-theme"
-                        type="button"
-                        class="theme-toggle"
-                        aria-label="Переключить тёмную тему"
-                    >
-                        <img src="assets/on_toggle_icon_214059.svg" alt="" />
-                    </button>
-                    <!-- <input type="checkbox" >
-                     <label class="theme-toggle" data-action="toggle-theme" aria-label="Переключить тему">
-                        <input type="checkbox" checked>
-                        <span class="toggle-slider"></span>
-                    </label> -->
-                    <!-- <div class="test">
-                        <label for=""></label>
-                        <div class="test2"><input type="checkbox" class="checkbox-toggle" /></div>
-                    </div> -->
+                    <div class="theme-toggle">
+                        <input id="dark-theme-toggle" type="checkbox" name="theme-toggle" hidden />
+                        <label for="dark-theme-toggle">
+                            <span>Тёмная тема</span>
+                            <span class="toggle-slider"> </span>
+                        </label>
+                    </div>
                 </div>
                 <div class="settings__bottom">
                     <button type="button" class="default-button default-button--secondary">
@@ -295,10 +286,11 @@
                 <div class="filter__top">
                     <div class="filter__top__sort">
                         <div class="filter__group">
-                            <span class="filter__label">Сортировать:</span>
-                            <button type="button" class="filter__sort-arrow">↑</button>
+                            <label for="type-sort" class="filter__label">Сортировать:</label>
+                            <input type="checkbox" name="ordering" id="ordering-sort" hidden />
+                            <label for="ordering-sort" class="ordering-sort">↑</label>
 
-                            <select class="filter__select">
+                            <select name="type-sort" class="filter__select" id="type-sort">
                                 <option>ABC</option>
                                 <option>По дате</option>
                                 <option>По сумме</option>
@@ -306,8 +298,12 @@
                         </div>
 
                         <div class="filter__group">
-                            <span class="filter__label">Тип:</span>
-                            <select class="filter__select">
+                            <label for="type-transaction-sort" class="filter__label">Тип:</label>
+                            <select
+                                name="type-transaction"
+                                class="filter__select"
+                                id="type-transaction-sort"
+                            >
                                 <option>Всё</option>
                                 <option>Доход</option>
                                 <option>Расход</option>
@@ -315,9 +311,9 @@
                         </div>
 
                         <div class="filter__group">
-                            <span class="filter__label">Категории:</span>
-                            <select class="filter__select">
-                                <option>Выбрать</option>
+                            <label for="category-sort" class="filter__label">Категории:</label>
+                            <select class="filter__select" name="category" id="category-sort">
+                                <option selected disabled>Выбрать</option>
                                 <option>Еда</option>
                                 <option>Транспорт</option>
                                 <option>Развлечения</option>
