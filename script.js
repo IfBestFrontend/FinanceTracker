@@ -249,8 +249,6 @@ function OpenSettings() {
 }
 function OpenEditTransaction() {}
 
-function CreateOptionsToFormTransactionCategory() {}
-
 function CreateOptionsToFormTransactionCategory() {
     const select = document.getElementById('form-transaction-category');
     if (!select) return;
@@ -485,7 +483,7 @@ function StateLog() {
 }
 
 // ---------ОСНОВНОЙ КОД----------
-const IS_DEBUG = true;
+const IS_DEBUG = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Испольнение кода загрузки окна");
