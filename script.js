@@ -203,6 +203,26 @@ function OpenEditTransaction(){
 
 }
 
+function CreateOptionsToFormTransactionCategory() {
+    const select = document.getElementById('form-transaction-category');
+    if (!select) return;
+
+    const selectedValue = select.value;
+
+    select.innerHTML = '<option disabled selected>Выберите категорию</option>';
+
+    categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat[CATEGORY.ID];
+        option.textContent = cat[CATEGORY.NAME];
+        select.appendChild(option);
+    });
+
+    if (selectedValue && Array.from(select.options).some(opt => opt.value == selectedValue)) {
+        select.value = selectedValue;
+    }
+}
+
 //Основные функции
 function ShowMoreTransactions(count) {
     if (g_currentOutputTransaction >= filteredTransactions.length) {
@@ -332,6 +352,7 @@ function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
     // Конец функции:
     UpdateLocalStorageTransactions();
+    CreateOptionsToFormTransactionCategory(); 
 }
 
 //Отрисовка и сабы отрисовки (до сортировки)
@@ -393,6 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // CreateDemoTransaction();
     LoadCategories();
+    CreateOptionsToFormTransactionCategory();
     LoadTransactions();
 
     // Инициализация пагинации
