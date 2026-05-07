@@ -382,6 +382,53 @@ function AddCategory(name, hex) {
     UpdateLocalStorageTransactions();
 }
 
+function GetTransactionFormValues() {
+    try {
+        const dialog = document.getElementById("addEditTransaction");
+        if (!dialog) throw new Error("GetFormValues: диалог не найден");
+
+        const form = dialog.querySelector(".transaction-form");
+        if (!form) throw new Error("GetFormValues: форма не найдена");
+
+        const data = new FormData(form);
+
+        const type = data.get("type");
+        if (type !== "income" && type !== "expense") {
+            throw new Error(`GetFormValues: некорректный type (${type})`);
+        }
+        const summRaw = data.get("summ");
+        const summ = parseFloat(summRaw);
+        if (isNaN(summ) || summ <= 0) {
+            throw new Error(`GetFormValues: некорректная summ (${summRaw})`);
+        }
+
+        const categoryRaw = data.get("category");
+        let category;
+        if (categoryRaw === null || categoryRaw === "" || categoryRaw === "Выберите категорию") {
+            category = 0;
+        } else {
+            const categoryId = Number(categoryRaw);
+            if (!Number.isInteger(categoryId) || isNaN(categoryId)) {
+                throw new Error(`GetFormValues: category должен быть числовым id, получено (${categoryRaw})`);
+            }
+            category = categoryId;
+        }
+
+        const dateRaw = data.get("date");
+        const dateObj = new Date(dateRaw);
+        if (!dateRaw || isNaN(dateObj.getTime())) {
+            throw new Error(`GetFormValues: некорректная date (${dateRaw})`);
+        }
+
+        const comment = data.get("comment") ?? "";
+
+        return { type, summ, category, date: dateObj, comment };
+    } catch (e) {
+        console.error(e.message);
+        return null;
+    }
+}
+
 //Отрисовка и сабы отрисовки (до сортировки)
 //
 
