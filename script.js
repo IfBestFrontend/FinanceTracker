@@ -1,26 +1,64 @@
 // Глобальные переменные и константы
 
-
 const UI_TEXT = {
     // Для add-edit-transaction
     transaction_editTitle: "Редактирование транзакции",
     transaction_addTitle: "Новая транзакция",
     transaction_saveBtn: "Сохранить",
-    transaction_addBtn: "Добавить",
 
     // Для nnn
 };
 
+const addEditTransactionDialog = document.getElementById("add-edit-transaction");
+const addEditTransactionForm = document.getElementById("add-edit-form");
+
 const action = {
     "close-dialog": () => CloseDialog(),
-    "open-edit-transaction": (ctx) => OpenEditTransaction(ctx.id),
+    "open-edit-transaction": (ctx) => {
+        if (!ctx.id) {
+            console.error("Нет data-id для редактирования");
+            return;
+        }
+        const tx = transactions.find((t) => t[TRANSACTION.ID] == ctx.id);
+        if (!tx) {
+            console.error(`Транзакция с id=${ctx.id} не найдена`);
+            return;
+        }
+
+        addEditTransactionForm.dataset.id = ctx.id;
+        addEditTransactionDialog.querySelector("[data-modal-title]").textContent =
+            UI_TEXT.transaction_editTitle;
+
+        Object.entries(tx).forEach(([key, value]) => {
+            const el = addEditTransactionForm.elements[key];
+            if (!el) return;
+
+            if (key === "date") {
+                el.valueAsDate = value ? new Date(value) : null;
+            } else {
+                el.value = value;
+            }
+        });
+
+        addEditTransactionDialog.showModal();
+    },
+    "open-add-transaction": () => {
+        addEditTransactionForm.reset();
+        delete addEditTransactionForm.dataset.id;
+        addEditTransactionDialog.querySelector("[data-modal-title]").textContent =
+            UI_TEXT.transaction_addTitle;
+        addEditTransactionDialog.showModal();
+    },
     "delete-transaction": (ctx) => DeleteTransactions(ctx.id),
     "toggle-theme": () => ToggleTheme(),
     "show-more": () => ShowMoreTransactions(),
     "open-settings": () => OpenSettings(),
-}
-
-
+    "exclude-category": () => ExcludeCategory(),
+    "delete-category": () => DeleteCategory(),
+    "show-comment": (ctx) => ToggleComment(ctx.id),
+    // "edit-transaction": () => EditTransaction(),
+    // "add-transaction": () => AddTransaction(),
+};
 // let modal = getQwe
 
 const LOCALSTORAGE_KEY = {
@@ -68,10 +106,6 @@ let filteredCategories = [];
 let g_currentOutputTransaction = 0;
 const TRANSACTIONS_BATCH_SIZE = 5;
 let g_maxOutputTransaction = 0;
-
-const actions = {
-    "show-comment": (ctx) => ToggleComment(ctx.id),
-};
 
 //основные вспомогательные функции
 
@@ -159,8 +193,23 @@ function CreateDemoTransaction() {
     AddTransaction("income", 50000, 0, new Date("2026-01-11"), "Аванс");
     AddTransaction("income", 30000, 0, new Date("2026-01-12"), "Основная зарплата");
     AddTransaction("expense", 3500, 1, new Date("2026-01-13"), "Продукты");
-    AddTransaction("expense", 1200, 1, new Date("2026-01-14"), "Такси");
-    AddTransaction("expense", 2500, 1, new Date("2026-01-15"), "Кино");
+    AddTransaction("expense", 1200, 1, new Date("2026-01-14"), "");
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино");
+    AddTransaction("expense", 2500, 1, new Date("2026-01-15"), "На вкусняшки");
+    AddTransaction("income", 2500, 0, new Date("2026-01-15"), "");
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино8");
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино9");
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино10");
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино11");
+    AddTransaction(
+        "expense",
+        2500,
+        4,
+        new Date("2026-01-15"),
+        `Кино12 + много символов ${"и 123 ттт-ттт 32321".repeat(1000)}`
+    );
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино13");
+    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино14");
 }
 // Было: LoadAllTransactionList
 function LoadTransactions() {
@@ -195,20 +244,19 @@ function CheckBaseCategory() {
 function CloseDialog(e) {}
 
 function OpenSettings() {
-    const dialog = document.getElementById('settings');
-    if (dialog) dialog.showModal(); 
-
+    const dialog = document.getElementById("settings");
+    if (dialog) dialog.showModal();
 }
-function OpenEditTransaction(){
+function OpenEditTransaction() {}
 
-}
+function CreateOptionsToFormTransactionCategory() {}
 
 //Основные функции
 function ShowMoreTransactions(count) {
     if (g_currentOutputTransaction >= filteredTransactions.length) {
-        const btn = document.getElementById('show-more');
-        if (btn) btn.style.display = 'none';
-        console.warn('ShowMoreTransactions: все транзакции уже показаны');
+        const btn = document.getElementById("show-more");
+        if (btn) btn.style.display = "none";
+        console.warn("ShowMoreTransactions: все транзакции уже показаны");
         return;
     }
 
@@ -216,65 +264,65 @@ function ShowMoreTransactions(count) {
     const toShow = Math.min(count, remaining);
     if (toShow <= 0) return;
 
-    const container = document.querySelector('.transaction-list');
-    const template = document.getElementById('transaction');
+    const container = document.querySelector(".transaction-list");
+    const template = document.getElementById("transaction");
     if (!container || !template) {
-        console.error('Не найден контейнер или шаблон');
+        console.error("Не найден контейнер или шаблон");
         return;
     }
 
     filteredTransactions
         .slice(g_currentOutputTransaction, g_currentOutputTransaction + toShow)
-        .forEach(tr => {
+        .forEach((tr) => {
             const clone = template.content.cloneNode(true);
-            const div = clone.querySelector('.transaction');
+            const div = clone.querySelector(".transaction");
             if (!div) return;
 
             div.dataset.id = tr[TRANSACTION.ID];
 
             // dot
-            const dot = clone.querySelector('.transaction__dot');
+            const dot = clone.querySelector(".transaction__dot");
             if (dot) {
-                const dotColor = tr[TRANSACTION.TYPE] === 'expense' ? '#ff3b3b' : '#4ea3ff';
-                dot.style.setProperty('--dot-color', dotColor);
+                const dotColor = tr[TRANSACTION.TYPE] === "expense" ? "#ff3b3b" : "#4ea3ff";
+                dot.style.setProperty("--dot-color", dotColor);
             }
 
             // amount
-            const amountEl = clone.querySelector('.transaction__amount');
+            const amountEl = clone.querySelector(".transaction__amount");
             if (amountEl) {
-                const sign = tr[TRANSACTION.TYPE] === 'income' ? '+' : '-';
+                const sign = tr[TRANSACTION.TYPE] === "income" ? "+" : "-";
                 amountEl.textContent = `${sign} ${tr[TRANSACTION.SUMM].toFixed(2)} ₽`;
             }
 
             // category
-            const catEl = clone.querySelector('.transaction__category');
+            const catEl = clone.querySelector(".transaction__category");
             if (catEl) {
-                if (tr[TRANSACTION.TYPE] === 'expense' && tr[TRANSACTION.CATEGORY]) {
-                    const cat = categories.find(c => c[CATEGORY.ID] === tr[TRANSACTION.CATEGORY]);
-                    catEl.textContent = cat ? cat[CATEGORY.NAME] : '';
-                    catEl.style.display = '';
+                if (tr[TRANSACTION.TYPE] === "expense" && tr[TRANSACTION.CATEGORY]) {
+                    const cat = categories.find((c) => c[CATEGORY.ID] === tr[TRANSACTION.CATEGORY]);
+                    catEl.textContent = cat ? cat[CATEGORY.NAME] : "";
+                    catEl.style.display = "";
                 } else {
-                    catEl.style.display = 'none';
+                    catEl.style.display = "none";
                 }
             }
 
             // date
-            const dateEl = clone.querySelector('.transaction__date');
+            const dateEl = clone.querySelector(".transaction__date");
             if (dateEl) {
-                dateEl.textContent = new Date(tr[TRANSACTION.DATE]).toLocaleDateString('ru-RU');
+                dateEl.textContent = new Date(tr[TRANSACTION.DATE]).toLocaleDateString("ru-RU");
             }
 
             // note
-            const noteEl = clone.querySelector('.transaction__note');
-            const moreBtn = clone.querySelector('.transaction__more');
+            const noteEl = clone.querySelector(".transaction__note");
+            const moreBtn = clone.querySelector(".transaction__more");
             if (noteEl) {
-                if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== '') {
+                if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== "") {
                     noteEl.textContent = tr[TRANSACTION.COMMENT];
-                    noteEl.classList.remove('hidden'); // видим
+                    noteEl.classList.remove("hidden"); // видим
                 } else {
-                    noteEl.textContent = ''; 
-                    noteEl.classList.add('hidden');
-                    if (moreBtn) moreBtn.style.display = 'none'; 
+                    noteEl.textContent = "";
+                    noteEl.classList.add("hidden");
+                    if (moreBtn) moreBtn.style.display = "none";
                 }
             }
 
@@ -282,29 +330,30 @@ function ShowMoreTransactions(count) {
         });
 
     g_currentOutputTransaction += toShow;
-    const showMoreBtn = document.getElementById('show-more');
+    const showMoreBtn = document.getElementById("show-more");
     if (showMoreBtn) {
-        showMoreBtn.style.display = g_currentOutputTransaction >= filteredTransactions.length ? 'none' : 'block';
+        showMoreBtn.style.display =
+            g_currentOutputTransaction >= filteredTransactions.length ? "none" : "block";
     }
 }
 
 function ToggleComment(transactionId) {
     const transaction = document.querySelector(`.transaction[data-id="${transactionId}"]`);
     if (!transaction) return;
-    const note = transaction.querySelector('.transaction__note');
-    const button = transaction.querySelector('.transaction__more');
+    const note = transaction.querySelector(".transaction__note");
+    const button = transaction.querySelector(".transaction__more");
     if (!note) return;
     if (!note.textContent.trim()) return;
 
-    note.classList.toggle('hidden');
+    note.classList.toggle("hidden");
 
     if (button) {
-        const img = button.querySelector('img');
+        const img = button.querySelector("img");
         if (img) {
-            if (img.style.transform === 'rotate(180deg)') {
-                img.style.transform = '';
+            if (img.style.transform === "rotate(180deg)") {
+                img.style.transform = "";
             } else {
-                img.style.transform = 'rotate(180deg)';
+                img.style.transform = "rotate(180deg)";
             }
         }
     }
@@ -318,15 +367,14 @@ function AddTransaction(type, summ, category, date, comment) {
 
 function EditTransaction(id, type, summ, category, date, comment) {
     // !!!
-
+    const index = transactions.findIndex((element) => element.id === id);
+    transactions[index] = CollectTransactionObject(type, summ, category, date, comment, id);
     // !!!
     // Конец функции:
     UpdateLocalStorageTransactions();
 }
 
-function DeleteTransactions(id) {
-
-}
+function DeleteTransactions(id) {}
 
 function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
@@ -337,24 +385,24 @@ function AddCategory(name, hex) {
 //Отрисовка и сабы отрисовки (до сортировки)
 //
 
-function CreateExpenseList(list) { }
+function CreateExpenseList(list) {}
 
 function RenderExpenseChart() {
     const EXPENSE_LIST = CreateExpenseList(filteredTransactions);
 }
 
-function CreateNDayTransactionList(day) { }
+function CreateNDayTransactionList(day) {}
 
 function RenderBalanceChart(day) {
     // было: N_DAY_TRANSACTION_LIST
     let nDaysTransaction = CreateNDayTransactionList(day);
 }
 
-function ToggleTheme() {
+function ToggleTheme() {}
 
-}
+function ExcludeCategory() {}
 
-
+function DeleteCategory() {}
 
 //Отладка
 function StateLog() {
@@ -364,12 +412,12 @@ function StateLog() {
     console.log(`transactions: `, transactions);
     console.log(`BASE_CATEGORIES: `, BASE_CATEGORIES);
     console.log(`filteredTransactions: `, filteredTransactions);
-    console.log(`g_currentOutputTransaction: `, g_currentOutputTransaction)
+    console.log(`g_currentOutputTransaction: `, g_currentOutputTransaction);
     console.log(`--- Актуальные для отладки значения закончились ---`);
 }
 
 // ---------ОСНОВНОЙ КОД----------
-const IS_DEBUG = false;
+const IS_DEBUG = true;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Испольнение кода загрузки окна");
@@ -401,52 +449,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
 
-    const showMoreBtn = document.getElementById('show-more');
+    const showMoreBtn = document.getElementById("show-more");
     if (showMoreBtn) {
         showMoreBtn.onclick = () => ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
     }
 
-    const transactionsContainer = document.querySelector('.transaction-list');
-    if (transactionsContainer) {
-        transactionsContainer.addEventListener('click', (event) => {
-            const btn = event.target.closest('[data-action]');
-            if (!btn) return;
-            const actionName = btn.getAttribute('data-action');
-            const actionFn = actions[actionName];
-            if (actionFn) {
-                const transaction = btn.closest('.transaction');
-                if (transaction) {
-                    const ctx = { id: transaction.dataset.id, element: transaction };
-                    actionFn(ctx);
-                }
-            }
-        });
-    }
-
     StateLog();
     // return;
-    
-    
-    
-    
-    
+
     // События
-    
+
     // Если что-то работает не так - писать в общий чат, разобъём обратно на отдельные функции списки
     function delegate(actionsMap) {
         return (e) => {
-            const btn = e.target.closest('[data-action]');
+            const btn = e.target.closest("[data-action]");
             if (!btn) return;
-            const item = btn.closest('[data-id]');
+            const item = btn.closest("[data-id]");
             const ctx = { e, id: item?.dataset.id, ...btn.dataset };
             const name = btn.dataset.action;
+            console.log(`ctx, состояние:`, ctx);
             if (actionsMap[name]) actionsMap[name](ctx);
         };
     }
 
-    document.getElementById('header').addEventListener('click', delegate(action));
+    document.getElementById("add-transaction-button").addEventListener("click", delegate(action));
 
-    document.getElementById('transactionsList').addEventListener('click', (action));
+    document.getElementById("header").addEventListener("click", delegate(action));
 
-
-})
+    document.getElementById("transactions-list").addEventListener("click", delegate(action));
+});

@@ -56,11 +56,11 @@
                 <button data-action="" aria-label="" class="btn__del">×</button>
             </div>
         </template>
-        <dialog id="addEditTransaction" class="add-edit-transaction">
+        <dialog id="add-edit-transaction" class="add-edit-transaction">
             <button data-action="close-dialog" class="close-dialog-button">x</button>
-            <h2 id="add-edit-label">Тест</h2>
+            <h2 data-modal-title>Тест</h2>
             <!-- добавить data-id в режиме редактирования -->
-            <form class="transaction-form" action="">
+            <form class="transaction-form" action="" id="add-edit-form">
                 <label>Тип</label>
 
                 <div class="type-toggle two-buttons">
@@ -119,7 +119,7 @@
 
                 <div class="two-buttons">
                     <button data-action="close-dialog" type="button">Отмена</button>
-                    <button data-action="" type="submit">Обновить</button>
+                    <button data-action="" type="submit">Сохранить</button>
                 </div>
             </form>
         </dialog>
@@ -361,8 +361,8 @@
                     </button>
                 </form>
             </section>
-            <section class="transactions">
-                <div class="transaction-list"></div>
+            <section class="transactions" >
+                <div class="transaction-list" id="transactions-list"></div>
                 <button id="show-more" data-action="show-more">Показать ещё</button>
                 <!-- Затычка: -->
                 <button type="button" onclick="window.addEditTransaction.showModal()">
@@ -372,7 +372,8 @@
                     class="floating-add"
                     type="button"
                     aria-label="Добавить транзакцию"
-                    data-action=""
+                    data-action="open-add-transaction"
+                    id="add-transaction-button"
                 >
                     +
                 </button>

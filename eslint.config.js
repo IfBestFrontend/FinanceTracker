@@ -29,6 +29,13 @@ module.exports = [
             "no-unused-vars": "warn", // ⚠️ Неиспользуемые переменные (let i, etc.)
             "prefer-const": "warn", // ⚠️ let, который можно заменить на const
             "no-implicit-coercion": "warn", // ⚠️ Неявное приведение типов
+            // 🔴 Строгая проверка: только латиница, цифры, _ и $
+            // ignoreDestructuring: false — ловит опечатки даже в { имя: value }
+            "id-match": ["error", "^[a-zA-Z_$][a-zA-Z0-9_$]*$", {
+                "properties": false,
+                "onlyDeclarations": false,
+                "ignoreDestructuring": false 
+            }],
         },
     },
 ];

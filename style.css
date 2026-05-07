@@ -1,20 +1,20 @@
 :root {
-    --body--bg-color: #DBF0DD;
-    --element--bg-color: #F1F7F7;
-    --header--bg-color: #F1F7F7;
-    --stub-element--bg-color: #2EC195;
-    --add-transaction-button--bg-color: #2EC195;
-    --accent-button--bg-color: #02DF82;
+    --body--bg-color: #dbf0dd;
+    --element--bg-color: #f1f7f7;
+    --header--bg-color: #f1f7f7;
+    --settings--bg-color: var(--body--bg-color);
+    --stub-element--bg-color: #2ec195;
+    --add-transaction-button--bg-color: #2ec195;
+    --accent-button--bg-color: #02df82;
     --sub-button--bg-color: none;
-    --sub-button--border-color: #030F0F80;
+    --sub-button--border-color: #030f0f80;
     --input--border-color: var(--sub-button--border-color);
 
     /* B2 примерно равен прозрачности 70 (~69.8) */
-    --sub-font--color: #030F0FB2;
-    --font--color: #030F0F;
+    --sub-font--color: #030f0fb2;
+    --font--color: #030f0f;
 
-
-/*  */
+    /*  */
     --header-height: 75px;
     --header-font-size: 18px;
     --border-radius-main: 20px;
@@ -23,25 +23,26 @@
 
     --checkbox--color: var(--font--color);
 
-     /* sub-цвета (временно) */
-    --color-food: #1FDD00;
-    --color-transport: #6AB4FF;
-    --color-entertainment: #FFA100;
-    --color-health: #FFF500;
-    --color-house: #976AFF;
-    --color-custom: #0B4539;
-    --income-color: #6AB4FF;
-    --expense-color: #FF3333;
-
+    /* sub-цвета (временно) */
+    --color-food: #1fdd00;
+    --color-transport: #6ab4ff;
+    --color-entertainment: #ffa100;
+    --color-health: #fff500;
+    --color-house: #976aff;
+    --color-custom: #0b4539;
+    --income-color: #6ab4ff;
+    --expense-color: #ff3333;
 }
 
 body.dark {
-    --body--bg-color: #030F0F;
-    --element--bg-color: #051F20;
-    --header--bg-color: #021A1A;
-    --sub-button--border-color: #D9D9D980;
-    --sub-font--color: #D9D9D9B2;
-    --font--color: #D9D9D9;
+    --body--bg-color: #030f0f;
+    --element--bg-color: #051f20;
+    --header--bg-color: #021a1a;
+    --settings--bg-color: var(--header--bg-color);
+
+    --sub-button--border-color: #d9d9d980;
+    --sub-font--color: #d9d9d9b2;
+    --font--color: #d9d9d9;
     --input--border-color: var(--sub-button--border-color);
     --checkbox--color: var(--font--color);
 
@@ -62,7 +63,6 @@ body {
     /* font-family: 'Inter', sans-serif; */
     font-family: "Roboto", Helvetica, sans-serif;
 
-
     /* scroll-margin-top: var(--header-height) !important; */
 }
 
@@ -81,7 +81,6 @@ dialog {
 button:hover {
     cursor: pointer;
 }
-
 
 * {
     box-sizing: border-box;
@@ -112,15 +111,45 @@ main {
     padding: 30px;
 }
 
-
 .has-bg-element {
     background-color: var(--element--bg-color);
 }
 
 dialog {
     position: relative;
+    font-size: var(--font--size);
 }
 
+::backdrop {
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(2px);
+}
+
+input,
+textarea,
+select,
+option {
+    font-size: 18px !important;
+    color: var(--sub-font--color) !important;
+}
+
+
+input[type="date"] {
+    position: relative;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+input[type="date"] {
+  padding-right: 12px;
+}
 
 /* Элементы общего использования */
 
@@ -140,20 +169,17 @@ dialog {
     filter: invert(1);
 }
 
-
-
-
 /* Отдельные элементы */
 
 /* add-edit-transaction */
 .add-edit-transaction {
     width: 733px;
-    height: 620px;
+    /* height: 620px; */
     margin: auto;
     padding: 30px;
     border-radius: 16px;
     border: 1px solid white;
-    background-color: #030F0F;
+    background-color: #030f0f;
     color: white;
 }
 
@@ -169,30 +195,30 @@ dialog {
     margin-bottom: 10px;
 }
 
-.add-edit-transaction input, .add-edit-transaction textarea, .add-edit-transaction select {
+.add-edit-transaction input,
+.add-edit-transaction textarea,
+.add-edit-transaction select {
     width: 100%;
-    padding-left: 2%;
-    font-size: larger;
-    height: 42px;
+    padding-left: 5px;
+    height: 36px;
     background-color: transparent;
-    border: 1px solid #D9D9D9;
+    border: 1px solid #d9d9d9;
     border-radius: 10px;
-    color: #D9D9D9;
+    color: #d9d9d9;
 }
 
 .add-edit-transaction option {
-    background-color: #030F0F;
-    color: #D9D9D9;
+    background-color: #030f0f;
+    color: #d9d9d9;
 }
 
 .add-edit-transaction textarea {
     height: 84px;
-    font-size: larger;
 }
 
 .add-edit-transaction .two-buttons button {
     width: 49%;
-    height: 42px;
+    height: 36px;
     border-color: transparent;
     text-align: center;
     border-radius: 15px;
@@ -204,7 +230,7 @@ dialog {
 
 .add-edit-transaction .income-btn {
     background-color: rgba(59, 130, 246, 0.1333);
-    color: #3B82F6;
+    color: #3b82f6;
 }
 
 .add-edit-transaction .expense-btn {
@@ -233,7 +259,7 @@ dialog {
     margin-bottom: 16px;
 }
 
-.filter__top__sort{
+.filter__top__sort {
     display: flex;
     gap: 20px;
 }
@@ -266,22 +292,29 @@ dialog {
     border: 1px solid rgba(255, 255, 255, 0.16);
     background: transparent;
     color: var(--font--color);
-    font-size: 14px;
+    /* font-size: 14px; */
     outline: none;
-    background-color: #021A1A;
+    background-color: #021a1a;
 }
 
 .filter__date::-webkit-inner-spin-button,
 .filter__date::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 .filter__date {
-  -moz-appearance: textfield;
+    -moz-appearance: textfield;
 }
 
-.filter__top__dates{
+.filter__top__dates {
     margin-left: auto;
+}
+
+label.ordering-sort{
+    
+}
+#ordering-sort:checked + label.ordering-sort{
+    transform: scale(-1, -1);
 }
 
 /* Стрелка */
@@ -312,15 +345,15 @@ dialog {
     margin-bottom: 5px;
 }
 
-.btn__del{
+.btn__del {
     border: none;
     background: none;
 }
 
-.btn__del__cos{
+.btn__del__cos {
     border: none;
     background: none;
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .tag {
@@ -340,12 +373,25 @@ dialog {
 
 /* Цвета */
 /* Временная затычка */
-.tag--green { background: #43e81f; }
-.tag--blue { background: #62a8ff; }
-.tag--orange { background: #ffad1f; }
-.tag--yellow { background: #ffe81f; }
-.tag--purple { background: #a76cff; }
-.tag--teal { background: #0f6f66; color: #eaffff; }
+.tag--green {
+    background: #43e81f;
+}
+.tag--blue {
+    background: #62a8ff;
+}
+.tag--orange {
+    background: #ffad1f;
+}
+.tag--yellow {
+    background: #ffe81f;
+}
+.tag--purple {
+    background: #a76cff;
+}
+.tag--teal {
+    background: #0f6f66;
+    color: #eaffff;
+}
 
 /* Поиск */
 .filter__search {
@@ -379,8 +425,6 @@ dialog {
     color: var(--font--color);
 }
 
-
-
 /* Список транзакций */
 
 .transactions {
@@ -408,7 +452,7 @@ dialog {
     color: var(--font--color);
 }
 
-.transaction__dot, 
+.transaction__dot,
 .transaction__amount,
 .transaction__divider,
 .transaction__category {
@@ -442,7 +486,6 @@ dialog {
     background: #4ea3ff;
 }
 
-
 .transaction__amount {
     width: 150px;
     white-space: nowrap;
@@ -471,7 +514,7 @@ dialog {
     flex: 0 0 auto;
 }
 
-.transaction__right img{
+.transaction__right img {
     width: 30px;
     height: 30px;
 }
@@ -505,7 +548,7 @@ dialog {
     padding-bottom: 4px;
 }
 
-.transaction__more__dot{
+.transaction__more__dot {
     margin-top: 3px;
     width: 10px;
     height: 10px;
@@ -579,8 +622,6 @@ dialog {
 .transaction__delete:hover {
     filter: brightness(1.05);
 }
-
-
 
 /* Тут покоится код Dupha, для дальнейшей редакции: */
 .header {
@@ -706,14 +747,14 @@ dialog {
 }
 
 .balance {
-/* sub-класс */
+    /* sub-класс */
 }
 
 .chart {
     min-height: 300px;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
 }
 
 .chart-inner {
@@ -753,15 +794,31 @@ dialog {
     display: block;
 }
 
-.legend-food .legend-dot { background-color: var(--color-food); }
-.legend-transport .legend-dot { background-color: var(--color-transport); }
-.legend-entertainment .legend-dot { background-color: var(--color-entertainment); }
-.legend-health .legend-dot { background-color: var(--color-health); }
-.legend-house .legend-dot { background-color: var(--color-house); }
-.legend-custom .legend-dot { background-color: var(--color-custom); }
-
+.legend-food .legend-dot {
+    background-color: var(--color-food);
+}
+.legend-transport .legend-dot {
+    background-color: var(--color-transport);
+}
+.legend-entertainment .legend-dot {
+    background-color: var(--color-entertainment);
+}
+.legend-health .legend-dot {
+    background-color: var(--color-health);
+}
+.legend-house .legend-dot {
+    background-color: var(--color-house);
+}
+.legend-custom .legend-dot {
+    background-color: var(--color-custom);
+}
 
 /* для settings */
+
+.dialog-conteiner:has(.settings) {
+    background-color: var(--body--bg-color);
+    color: var(--font--color);
+}
 
 .settings__title {
     text-align: center;
@@ -795,17 +852,32 @@ dialog {
 .settings .legend-item {
     padding: 6px 12px;
     border-radius: 12px;
-    color: #030F0F;
+    color: #030f0f;
     font-size: 14px;
 }
 
-.settings .legend-food { background-color: var(--color-food); }
-.settings .legend-transport { background-color: var(--color-transport); }
-.settings .legend-health { background-color: var(--color-health); }
-.settings .legend-entertainment { background-color: var(--color-entertainment); }
-.settings .legend-house { background-color: var(--color-house); }
-.settings .legend-custom { background-color: var(--color-custom); color: #FFFFFF; }
-.settings .legend-dot { display: none; }
+.settings .legend-food {
+    background-color: var(--color-food);
+}
+.settings .legend-transport {
+    background-color: var(--color-transport);
+}
+.settings .legend-health {
+    background-color: var(--color-health);
+}
+.settings .legend-entertainment {
+    background-color: var(--color-entertainment);
+}
+.settings .legend-house {
+    background-color: var(--color-house);
+}
+.settings .legend-custom {
+    background-color: var(--color-custom);
+    color: #ffffff;
+}
+.settings .legend-dot {
+    display: none;
+}
 
 .settings__add {
     display: flex;
@@ -827,7 +899,6 @@ dialog {
     padding: 0 12px;
 }
 
-
 .choose-color {
     width: 34px;
     height: 34px;
@@ -841,7 +912,6 @@ dialog {
 .choose-color--color {
     flex: 0 0 34px;
 }
-
 
 /*  */
 /*  */
@@ -894,7 +964,6 @@ dialog {
     min-width: 0;
     overflow-wrap: anywhere;
 }
-
 
 .close-dialog-button {
     width: 24px;
@@ -973,11 +1042,31 @@ dialog {
     gap: 14px;
 }
 
-
-
-.settings__bottom {
-    margin-top: -29px;
+#show-more {
+    align-self: center;
+    padding: 12px 24px;
+    border-radius: var(--border-radius-small);
+    border: none;
+    background-color: var(--accent-button--bg-color);
+    color: #030f0f;
 }
+
+/* .theme-toggle {
+    border: none;
+    background: transparent;
+    width: 38px;
+    height: 24px;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+} */
+
+/* .theme-toggle img {
+    max-width: 100%;
+    max-height: 100%;
+} */
 
 
 #show-more {
@@ -996,14 +1085,20 @@ dialog {
 
 
 /* Стилизация checkbox, до лучших времён */
-/* .theme-toggle {
-    display: inline-flex;
-    align-items: center;
+.theme-toggle {
+    display: flex;
     cursor: pointer;
     background-color: #00000000;
 }
+.theme-toggle label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+    height: min-content;
+}
 
-.theme-toggle input {
+/* .theme-toggle input {
     position: absolute;
     opacity: 0;
     width: 0;
@@ -1012,6 +1107,10 @@ dialog {
     -moz-appearance:  none;  
     -o-appearance:   none;  
     appearance:     none;    
+} */
+
+.theme-toggle label * {
+    display: block;
 }
 
 .toggle-slider {
@@ -1021,7 +1120,7 @@ dialog {
     width: 36px;
     height: var(--slider--height);
     border: var(--slider--border-size) solid var(--checkbox--color);
-    border-radius: calc(var(--slider--height) / 2); 
+    border-radius: calc(var(--slider--height) / 2);
     position: relative;
 }
 
@@ -1031,7 +1130,10 @@ dialog {
     --slider-left: 5px;
     content: "";
     position: absolute;
-    top: calc(var(--slider--height) / 2 - var(--slider-circle--heigth) / 2 - var(--slider--border-size) / 2);
+    top: calc(
+        var(--slider--height) / 2 - var(--slider-circle--heigth) / 2 - var(--slider--border-size) /
+            2
+    );
     left: var(--slider-left);
     width: var(--slider-circle--width);
     height: var(--slider-circle--heigth);
@@ -1040,11 +1142,63 @@ dialog {
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-toggle input:checked + .toggle-slider::before {
-    transform: translateX(calc(var(--slider--width) - var(--slider-circle--width) - var(--slider-left) * 2));
+.theme-toggle input:checked + label .toggle-slider::before {
+    transform: translateX(
+        calc(var(--slider--width) - var(--slider-circle--width) - var(--slider-left) * 2)
+    );
 }
 
-.theme-toggle input:focus-visible + .toggle-slider {
+#dark-theme-toggle:focus-visible + .toggle-slider {
     outline: 1px solid var(--checkbox--color);
     outline-width: 1px;
-} */
+}
+
+.type-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+/* Базовый стиль "кнопки" */
+.type-btn {
+    padding: 10px 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    /* background: #f5f5f5; */
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    text-align: center;
+    flex: 1;
+}
+
+/* Hover-эффект */
+.type-btn:hover {
+    border-color: #999;
+    /* background: #e9e9e9; */
+}
+
+/* ✅ МАГИЯ: когда радио выбрано — подсвечиваем соседний label */
+#form-transaction-type-income:checked + label.type-btn,
+#form-transaction-type-expense:checked + label.type-btn {
+    border-color: #4caf50; /* или твой акцентный цвет */
+    /* background: #4CAF50; */
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+/* Для состояния "расход" можно другой цвет */
+#form-transaction-type-expense:checked + label.type-btn {
+    border-color: #f44336;
+    /* background: #f44336; */
+    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Опционально: отключаем курсор-текст при выделении */
+.type-btn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
