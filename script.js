@@ -69,7 +69,6 @@ const LOCALSTORAGE_KEY = {
 const TRANSACTION = {
     ID: "id",
     TYPE: "type", // Только 'expense' или 'income'
-
     SUMM: "summ", // Только положительное
     CATEGORY: "category", // может быть пустым
     DATE: "date", // хранится в миллисикундах (количество миллисекунд, прошедших с 1 января 1970 года 00:00:00 по UTC до указанной даты)
@@ -87,6 +86,17 @@ let transactions = [];
 
 //Было: FILTERED_TRANSACTION_LIST
 let filteredTransactions = [];
+
+const defaultFilter = {
+    ordering: true,
+    "type-sort": "date",
+    "type-transaction": "all",
+    categories: [],
+    "start-date": null,
+    "end-date": null,
+    comment: "",
+};
+let filter = {};
 
 // Было: BASE_CATEGORY_LIST
 const BASE_CATEGORIES = [
@@ -250,21 +260,21 @@ function OpenSettings() {
 function OpenEditTransaction() {}
 
 function CreateOptionsToFormTransactionCategory() {
-    const select = document.getElementById('form-transaction-category');
+    const select = document.getElementById("form-transaction-category");
     if (!select) return;
 
     const selectedValue = select.value;
 
-    select.innerHTML = '<option disabled selected>Выберите категорию</option>';
+    select.innerHTML = "<option disabled selected>Выберите категорию</option>";
 
-    categories.forEach(cat => {
-        const option = document.createElement('option');
+    categories.forEach((cat) => {
+        const option = document.createElement("option");
         option.value = cat[CATEGORY.ID];
         option.textContent = cat[CATEGORY.NAME];
         select.appendChild(option);
     });
 
-    if (selectedValue && Array.from(select.options).some(opt => opt.value == selectedValue)) {
+    if (selectedValue && Array.from(select.options).some((opt) => opt.value == selectedValue)) {
         select.value = selectedValue;
     }
 }
@@ -398,27 +408,27 @@ function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
     // Конец функции:
     UpdateLocalStorageTransactions();
-    CreateOptionsToFormTransactionCategory(); 
+    CreateOptionsToFormTransactionCategory();
 }
 
 function GetTransactionFormValues() {
     try {
-        const dialog = document.getElementById("addEditTransaction");
-        if (!dialog) throw new Error("GetFormValues: диалог не найден");
+        const dialog = document.getElementById("add-edit-transaction");
+        if (!dialog) throw new Error("GetTransactionFormValues: диалог не найден");
 
         const form = dialog.querySelector(".transaction-form");
-        if (!form) throw new Error("GetFormValues: форма не найдена");
+        if (!form) throw new Error("GetTransactionFormValues: форма не найдена");
 
         const data = new FormData(form);
 
         const type = data.get("type");
         if (type !== "income" && type !== "expense") {
-            throw new Error(`GetFormValues: некорректный type (${type})`);
+            throw new Error(`GetTransactionFormValues: некорректный type (${type})`);
         }
         const summRaw = data.get("summ");
         const summ = parseFloat(summRaw);
         if (isNaN(summ) || summ <= 0) {
-            throw new Error(`GetFormValues: некорректная summ (${summRaw})`);
+            throw new Error(`GetTransactionFormValues: некорректная summ (${summRaw})`);
         }
 
         const categoryRaw = data.get("category");
@@ -428,7 +438,9 @@ function GetTransactionFormValues() {
         } else {
             const categoryId = Number(categoryRaw);
             if (!Number.isInteger(categoryId) || isNaN(categoryId)) {
-                throw new Error(`GetFormValues: category должен быть числовым id, получено (${categoryRaw})`);
+                throw new Error(
+                    `GetTransactionFormValues: category должен быть числовым id, получено (${categoryRaw})`
+                );
             }
             category = categoryId;
         }
@@ -436,7 +448,7 @@ function GetTransactionFormValues() {
         const dateRaw = data.get("date");
         const dateObj = new Date(dateRaw);
         if (!dateRaw || isNaN(dateObj.getTime())) {
-            throw new Error(`GetFormValues: некорректная date (${dateRaw})`);
+            throw new Error(`GetTransactionFormValues: некорректная date (${dateRaw})`);
         }
 
         const comment = data.get("comment") ?? "";
@@ -479,6 +491,7 @@ function StateLog() {
     console.log(`BASE_CATEGORIES: `, BASE_CATEGORIES);
     console.log(`filteredTransactions: `, filteredTransactions);
     console.log(`g_currentOutputTransaction: `, g_currentOutputTransaction);
+    console.log(`filter: `, filter);
     console.log(`--- Актуальные для отладки значения закончились ---`);
 }
 
@@ -506,6 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // CreateDemoTransaction();
+    filter = { ...defaultFilter };
     LoadCategories();
     CreateOptionsToFormTransactionCategory();
     LoadTransactions();

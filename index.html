@@ -231,20 +231,26 @@
 
                 <div id="chart-legend" class="chart-legend has-bg-element">
                     <span class="legend-stats">
-                        <span class="legend-stat"
-                            ><span class="legend-stat__label">За 7 дней:</span></span
-                        >
-                        <span class="legend-stat"
-                            ><span class="legend-stat__label">Доходы:</span
-                            ><span class="legend-stat__value income">100000.00₽</span></span
-                        >
+                        <span class="legend-stat">
+                            <span class="legend-stat__label">За 7 дней:</span>
+                        </span>
+                        <span class="legend-stat">
+                            <span class="legend-stat__label">Доходы:</span>
+                            <span data-income-summ class="legend-stat__value income"
+                                >100000.00₽</span
+                            >
+                        </span>
                         <span class="legend-stat"
                             ><span class="legend-stat__label">Расходы:</span
-                            ><span class="legend-stat__value expense">100000.00₽</span></span
+                            ><span data-income-expense class="legend-stat__value expense"
+                                >100000.00₽</span
+                            ></span
                         >
                         <span class="legend-stat"
                             ><span class="legend-stat__label">Остаток:</span
-                            ><span class="legend-stat__value balance">100000.00₽</span></span
+                            ><span data-income-balance class="legend-stat__value balance"
+                                >100000.00₽</span
+                            ></span
                         >
                     </span>
 
@@ -286,14 +292,14 @@
                 <div class="filter__top">
                     <div class="filter__top__sort">
                         <div class="filter__group">
-                            <label for="type-sort" class="filter__label">Сортировать:</label>
+                            <label for="type-sort" class="filter__label">Сортировка:</label>
                             <input type="checkbox" name="ordering" id="ordering-sort" hidden />
                             <label for="ordering-sort" class="ordering-sort">↑</label>
 
                             <select name="type-sort" class="filter__select" id="type-sort">
-                                <option>ABC</option>
-                                <option>По дате</option>
-                                <option>По сумме</option>
+                                <option value="date" selected>По дате</option>
+                                <option value="summ">По сумме</option>
+                                <option disabled value="abc">По категории</option>
                             </select>
                         </div>
 
@@ -304,30 +310,45 @@
                                 class="filter__select"
                                 id="type-transaction-sort"
                             >
-                                <option>Всё</option>
-                                <option>Доход</option>
-                                <option>Расход</option>
+                                <option value="all" selected>Всё</option>
+                                <option value="income">Доход</option>
+                                <option value="expense">Расход</option>
                             </select>
                         </div>
 
                         <div class="filter__group">
                             <label for="category-sort" class="filter__label">Категории:</label>
-                            <select class="filter__select" name="category" id="category-sort">
+                            <select
+                                disabled
+                                class="filter__select"
+                                name="category"
+                                id="category-sort"
+                            >
                                 <option selected disabled>Выбрать</option>
-                                <option>Еда</option>
+                                <!-- <option>Еда</option>
                                 <option>Транспорт</option>
                                 <option>Развлечения</option>
                                 <option>Здоровье</option>
-                                <option>Жильё</option>
+                                <option>Жильё</option> -->
                             </select>
                         </div>
                     </div>
                     <div class="filter__top__dates">
                         <div class="filter__group filter__dates">
-                            <span class="filter__label">с:</span>
-                            <input type="date" class="filter__date" placeholder=" __.__.____" />
-                            <span class="filter__label">по:</span>
-                            <input type="date" class="filter__date" placeholder=" __.__.____" />
+                            <label for="start-date-filter" class="filter__label">с:</label>
+                            <input
+                                name="start-date"
+                                id="start-date-filter"
+                                type="date"
+                                class="filter__date"
+                            />
+                            <label for="end-date-filter" class="filter__label">по:</label>
+                            <input
+                                name="end-date"
+                                id="end-date-filter"
+                                type="date"
+                                class="filter__date"
+                            />
                         </div>
                     </div>
                 </div>
@@ -355,13 +376,13 @@
                     </div>
                 </div>
                 <form class="filter__search" action="">
-                    <input type="text" name="comment-find" placeholder="Комментарий" />
+                    <input type="text" name="comment" placeholder="Комментарий" />
                     <button id="comment-found">
                         <img src="assets\Лупа___.png" alt="" />
                     </button>
                 </form>
             </section>
-            <section class="transactions" >
+            <section class="transactions">
                 <div class="transaction-list" id="transactions-list"></div>
                 <button id="show-more" data-action="show-more">Показать ещё</button>
                 <!-- Затычка: -->
