@@ -251,11 +251,15 @@ function CheckBaseCategory() {
     // !!!
 }
 
-function CloseDialog(e) {}
+function CloseDialog(e) { }
 
 function OpenSettings() {
-    const dialog = document.getElementById("settings");
+    const dialog = document.getElementById('settings');
     if (dialog) dialog.showModal();
+
+}
+function OpenEditTransaction() {
+
 }
 function OpenEditTransaction() {}
 
@@ -346,14 +350,24 @@ function ShowMoreTransactions(count) {
             if (noteEl) {
                 if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== "") {
                     noteEl.textContent = tr[TRANSACTION.COMMENT];
-                    noteEl.classList.remove("hidden"); // видим
+                    noteEl.classList.add('hidden'); // по умолчанию скрыт
+                    if (moreBtn) moreBtn.style.display = ''; // показываем кнопку
                 } else {
-                    noteEl.textContent = "";
-                    noteEl.classList.add("hidden");
-                    if (moreBtn) moreBtn.style.display = "none";
+                    noteEl.textContent = '';
+                    noteEl.classList.add('hidden');
+                    if (moreBtn) moreBtn.style.display = 'none';
                 }
             }
 
+            // divider - скрыть для доходов
+            const dividerEl = clone.querySelector('.transaction__divider');
+            if (dividerEl) {
+                if (tr[TRANSACTION.TYPE] === 'income') {
+                    dividerEl.style.display = 'none';
+                } else {
+                    dividerEl.style.display = 'inline-block';
+                }
+            }
             container.appendChild(clone);
         });
 
@@ -413,22 +427,22 @@ function AddCategory(name, hex) {
 
 function GetTransactionFormValues() {
     try {
-        const dialog = document.getElementById("add-edit-transaction");
-        if (!dialog) throw new Error("GetTransactionFormValues: диалог не найден");
+        const dialog = document.getElementById("addEditTransaction");
+        if (!dialog) throw new Error("GetFormValues: диалог не найден");
 
         const form = dialog.querySelector(".transaction-form");
-        if (!form) throw new Error("GetTransactionFormValues: форма не найдена");
+        if (!form) throw new Error("GetFormValues: форма не найдена");
 
         const data = new FormData(form);
 
         const type = data.get("type");
         if (type !== "income" && type !== "expense") {
-            throw new Error(`GetTransactionFormValues: некорректный type (${type})`);
+            throw new Error(`GetFormValues: некорректный type (${type})`);
         }
         const summRaw = data.get("summ");
         const summ = parseFloat(summRaw);
         if (isNaN(summ) || summ <= 0) {
-            throw new Error(`GetTransactionFormValues: некорректная summ (${summRaw})`);
+            throw new Error(`GetFormValues: некорректная summ (${summRaw})`);
         }
 
         const categoryRaw = data.get("category");
@@ -438,9 +452,7 @@ function GetTransactionFormValues() {
         } else {
             const categoryId = Number(categoryRaw);
             if (!Number.isInteger(categoryId) || isNaN(categoryId)) {
-                throw new Error(
-                    `GetTransactionFormValues: category должен быть числовым id, получено (${categoryRaw})`
-                );
+                throw new Error(`GetFormValues: category должен быть числовым id, получено (${categoryRaw})`);
             }
             category = categoryId;
         }
@@ -448,7 +460,7 @@ function GetTransactionFormValues() {
         const dateRaw = data.get("date");
         const dateObj = new Date(dateRaw);
         if (!dateRaw || isNaN(dateObj.getTime())) {
-            throw new Error(`GetTransactionFormValues: некорректная date (${dateRaw})`);
+            throw new Error(`GetFormValues: некорректная date (${dateRaw})`);
         }
 
         const comment = data.get("comment") ?? "";
@@ -476,9 +488,30 @@ function RenderBalanceChart(day) {
     let nDaysTransaction = CreateNDayTransactionList(day);
 }
 
-function ToggleTheme() {}
+// Переключение тёмной/светлой темы
+function ToggleTheme() {
+    const isDark = document.body.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    const toggle = document.getElementById('dark-theme-toggle');
+    if (toggle) toggle.checked = isDark;
+}
 
-function ExcludeCategory() {}
+// Инициализация темы из localStorage
+(function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const toggle = document.getElementById('dark-theme-toggle');
+    if (savedTheme === 'light') {
+        document.body.classList.remove('dark');
+        if (toggle) toggle.checked = false;
+    } else if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+        if (toggle) toggle.checked = true;
+    } else {
+        const isDark = document.body.classList.contains('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        if (toggle) toggle.checked = isDark;
+    }
+})();
 
 function DeleteCategory() {}
 
@@ -535,8 +568,33 @@ document.addEventListener("DOMContentLoaded", () => {
         showMoreBtn.onclick = () => ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
     }
 
+    const transactionsContainer = document.querySelector('.transaction-list');
+    if (transactionsContainer) {
+        transactionsContainer.addEventListener('click', (event) => {
+            const btn = event.target.closest('[data-action]');
+            if (!btn) return;
+            const actionName = btn.getAttribute('data-action');
+            const actionFn = actions[actionName];
+            if (actionFn) {
+                const transaction = btn.closest('.transaction');
+                if (transaction) {
+                    const ctx = { id: transaction.dataset.id, element: transaction };
+                    actionFn(ctx);
+                }
+            }
+        });
+    }
+
+    const themeToggle = document.getElementById('dark-theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('change', ToggleTheme);
+    }
+
     StateLog();
     // return;
+
+
+
 
     // События
 
