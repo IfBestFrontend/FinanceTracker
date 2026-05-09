@@ -227,6 +227,8 @@ function LoadTransactions() {
     console.log(`LoadTransactions: Выполнено. Записано: ${transactions.length} `);
 }
 
+
+
 function LoadCategories() {
     categories = JSON.parse(localStorage.getItem(LOCALSTORAGE_KEY.categories) || "[]");
     console.log(`LoadCategories: Выполнено. Записано: ${categories.length} `);
@@ -261,7 +263,7 @@ function OpenSettings() {
 function OpenEditTransaction() {
 
 }
-function OpenEditTransaction() {}
+function OpenEditTransaction() { }
 
 function CreateOptionsToFormTransactionCategory() {
     const select = document.getElementById("form-transaction-category");
@@ -345,16 +347,21 @@ function ShowMoreTransactions(count) {
             }
 
             // note
-            const noteEl = clone.querySelector(".transaction__note");
-            const moreBtn = clone.querySelector(".transaction__more");
+            const noteEl = clone.querySelector('.transaction__note');
+            const moreBtn = clone.querySelector('.transaction__more');
+
             if (noteEl) {
-                if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== "") {
+                if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== '') {
                     noteEl.textContent = tr[TRANSACTION.COMMENT];
-                    noteEl.classList.add('hidden'); // по умолчанию скрыт
-                    if (moreBtn) moreBtn.style.display = ''; // показываем кнопку
+                    noteEl.style.display = 'none';          
+                    if (moreBtn) {
+                        moreBtn.style.display = '';         
+                        const img = moreBtn.querySelector('img');
+                        if (img) img.style.transform = '';  
+                    }
                 } else {
                     noteEl.textContent = '';
-                    noteEl.classList.add('hidden');
+                    noteEl.style.display = 'none';          
                     if (moreBtn) moreBtn.style.display = 'none';
                 }
             }
@@ -382,22 +389,134 @@ function ShowMoreTransactions(count) {
 function ToggleComment(transactionId) {
     const transaction = document.querySelector(`.transaction[data-id="${transactionId}"]`);
     if (!transaction) return;
-    const note = transaction.querySelector(".transaction__note");
-    const button = transaction.querySelector(".transaction__more");
-    if (!note) return;
-    if (!note.textContent.trim()) return;
 
-    note.classList.toggle("hidden");
+    const note = transaction.querySelector('.transaction__note');
+    const button = transaction.querySelector('.transaction__more');
+    if (!note || !note.textContent.trim()) return; 
+
+    if (note.style.display === 'none' || note.style.display === '') {
+        note.style.display = 'block';  
+    } else {
+        note.style.display = 'none';
+    }
 
     if (button) {
-        const img = button.querySelector("img");
+        const img = button.querySelector('img');
         if (img) {
-            if (img.style.transform === "rotate(180deg)") {
-                img.style.transform = "";
-            } else {
-                img.style.transform = "rotate(180deg)";
-            }
+            img.style.transform = (note.style.display === 'block')
+                ? 'rotate(180deg)'
+                : '';
         }
+    }
+}
+
+function Filtering() {
+    const ordering = document.querySelector('#ordering-sort')?.checked ?? false;
+    const typeSort = document.querySelector('#type-sort')?.value ?? 'date';
+    const typeTransaction = document.querySelector('#type-transaction-sort')?.value ?? 'all';
+    const startDateValue = document.querySelector('#start-date-filter')?.value || '';
+    const endDateValue = document.querySelector('#end-date-filter')?.value || '';
+    const commentFilter = (document.querySelector('.filter__search input[name="comment"]')?.value || '')
+        .trim()
+        .toLowerCase();
+    const startDate = startDateValue ? new Date(startDateValue).getTime() : null;
+    const endDate = endDateValue ? new Date(endDateValue).getTime() : null;
+    const selectedCategoryIds = [];
+    const tagElements = document.querySelectorAll(
+        '#filter-categories-list .tag'
+    );
+
+    tagElements.forEach((tag) => {
+        const tagText = tag.textContent.replace('×', '').trim();
+        const category = categories.find(
+            (cat) => cat[CATEGORY.NAME] === tagText
+        );
+
+        if (category) {
+            selectedCategoryIds.push(category[CATEGORY.ID]);
+        }
+    });
+
+    filteredTransactions = transactions.filter((tr) => {
+        // Тип транзакции
+        if (typeTransaction !== 'all' && tr[TRANSACTION.TYPE] !== typeTransaction) {
+            return false;
+        }
+
+        // Категории только для расходов
+        if (tr[TRANSACTION.TYPE] === 'expense' && selectedCategoryIds.length > 0 && !selectedCategoryIds.includes(tr[TRANSACTION.CATEGORY])) {
+            return false;
+        }
+
+        // Дата начала
+        if (startDate !== null && tr[TRANSACTION.DATE] < startDate) {
+            return false;
+        }
+
+        // Дата конца
+        if (endDate !== null && tr[TRANSACTION.DATE] > endDate) {
+            return false;
+        }
+
+        // Комментарий
+        const comment = String(tr[TRANSACTION.COMMENT] || '').toLowerCase();
+
+        if (commentFilter && !comment.includes(commentFilter)) {
+            return false;
+        }
+
+        return true;
+    });
+
+    filteredTransactions.sort((a, b) => {
+        let compareResult = 0;
+
+        switch (typeSort) {
+            case 'summ':
+                compareResult =
+                    a[TRANSACTION.SUMM] -
+                    b[TRANSACTION.SUMM];
+                break;
+
+            case 'abc': {
+                const getCategoryName = (transaction) => {
+                    if (transaction[TRANSACTION.TYPE] !== 'expense') {
+                        return '';
+                    }
+                    const category = categories.find((cat) => cat[CATEGORY.ID] === transaction[TRANSACTION.CATEGORY]);
+                    return category
+                        ? category[CATEGORY.NAME].toLowerCase()
+                        : '';
+                };
+
+                compareResult = getCategoryName(a).localeCompare(
+                    getCategoryName(b)
+                );
+                break;
+            }
+
+            case 'date':
+            default: compareResult = a[TRANSACTION.DATE] - b[TRANSACTION.DATE];
+                break;
+        }
+        return ordering ? compareResult : -compareResult;
+    });
+
+    g_currentOutputTransaction = 0;
+
+    if (g_currentOutputTransaction > filteredTransactions.length) {
+        g_currentOutputTransaction = filteredTransactions.length;
+    }
+
+    const transactionList = document.querySelector('.transaction-list');
+    if (transactionList) {
+        transactionList.innerHTML = '';
+    }
+
+    ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
+
+    if (typeof UpdateStats === 'function') {
+        UpdateStats();
     }
 }
 
@@ -416,13 +535,13 @@ function EditTransaction(id, type, summ, category, date, comment) {
     UpdateLocalStorageTransactions();
 }
 
-function DeleteTransactions(id) {}
+function DeleteTransactions(id) { }
 
 function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
-    // Конец функции:
-    UpdateLocalStorageTransactions();
+    UpdateLocalStorageCategories();
     CreateOptionsToFormTransactionCategory();
+    populateCategorySelect(); // обновляем выпадающий список фильтра
 }
 
 function GetTransactionFormValues() {
@@ -475,13 +594,13 @@ function GetTransactionFormValues() {
 //Отрисовка и сабы отрисовки (до сортировки)
 //
 
-function CreateExpenseList(list) {}
+function CreateExpenseList(list) { }
 
 function RenderExpenseChart() {
     const EXPENSE_LIST = CreateExpenseList(filteredTransactions);
 }
 
-function CreateNDayTransactionList(day) {}
+function CreateNDayTransactionList(day) { }
 
 function RenderBalanceChart(day) {
     // было: N_DAY_TRANSACTION_LIST
@@ -513,7 +632,7 @@ function ToggleTheme() {
     }
 })();
 
-function DeleteCategory() {}
+function DeleteCategory() { }
 
 //Отладка
 function StateLog() {
@@ -568,34 +687,103 @@ document.addEventListener("DOMContentLoaded", () => {
         showMoreBtn.onclick = () => ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
     }
 
-    const transactionsContainer = document.querySelector('.transaction-list');
-    if (transactionsContainer) {
-        transactionsContainer.addEventListener('click', (event) => {
-            const btn = event.target.closest('[data-action]');
+    StateLog();
+
+    function populateCategorySelect() {
+        const categorySelect = document.getElementById('category-sort');
+        if (!categorySelect) return;
+        categorySelect.innerHTML = '<option selected disabled>Выбрать</option>';
+        categories.forEach(cat => {
+            if (cat[CATEGORY.ID] === 3) return; 
+            const option = document.createElement('option');
+            option.value = cat[CATEGORY.ID];
+            option.textContent = cat[CATEGORY.NAME];
+            categorySelect.appendChild(option);
+        });
+        categorySelect.disabled = false;
+    }
+    populateCategorySelect();
+
+    const categorySelect = document.getElementById('category-sort');
+    if (categorySelect) {
+        categorySelect.addEventListener('change', (e) => {
+            const selectedId = parseInt(e.target.value);
+            if (isNaN(selectedId)) return;
+            const selectedCategory = categories.find(cat => cat[CATEGORY.ID] === selectedId);
+            if (!selectedCategory) return;
+
+            const existingTags = document.querySelectorAll('#filter-categories-list .tag');
+            let alreadyExists = false;
+            existingTags.forEach(tag => {
+                const tagName = tag.textContent.replace('×', '').trim();
+                if (tagName === selectedCategory[CATEGORY.NAME]) alreadyExists = true;
+            });
+            if (alreadyExists) {
+                categorySelect.value = '';
+                return;
+            }
+
+            const newTag = document.createElement('div');
+            newTag.className = 'tag';
+            const categoryName = selectedCategory[CATEGORY.NAME];
+            switch (categoryName) {
+                case 'Еда':
+                    newTag.classList.add('tag--green');
+                    break;
+                case 'Транспорт':
+                    newTag.classList.add('tag--blue');
+                    break;
+                case 'Развлечения':
+                    newTag.classList.add('tag--orange');
+                    break;
+                case 'Здоровье':
+                    newTag.classList.add('tag--yellow');
+                    break;
+                case 'Жильё':
+                    newTag.classList.add('tag--purple');
+                    break;
+                default:
+                    newTag.classList.add('tag--custom');
+                    break;
+            }
+            newTag.textContent = selectedCategory[CATEGORY.NAME];
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'btn__del';
+            closeBtn.textContent = '×';
+            newTag.appendChild(closeBtn);
+            document.getElementById('filter-categories-list').appendChild(newTag);
+
+            Filtering();
+        });
+    }
+
+    const filterCategoriesList = document.getElementById('filter-categories-list');
+    if (filterCategoriesList) {
+        filterCategoriesList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn__del, .btn__del__cos');
             if (!btn) return;
-            const actionName = btn.getAttribute('data-action');
-            const actionFn = actions[actionName];
-            if (actionFn) {
-                const transaction = btn.closest('.transaction');
-                if (transaction) {
-                    const ctx = { id: transaction.dataset.id, element: transaction };
-                    actionFn(ctx);
-                }
+            const tag = btn.closest('.tag');
+            if (tag) {
+                tag.remove();
+                Filtering();
             }
         });
     }
 
-    const themeToggle = document.getElementById('dark-theme-toggle');
-    if (themeToggle) {
-        themeToggle.addEventListener('change', ToggleTheme);
+    const addCategoryBtn = document.querySelector('.settings__add .choose-color:last-child');
+    if (addCategoryBtn) {
+        addCategoryBtn.addEventListener('click', () => {
+            const nameInput = document.getElementById('category-name');
+            const colorInput = document.querySelector('.settings__add input[type="color"]');
+            const name = nameInput?.value.trim();
+            const hex = colorInput?.value;
+            if (name && hex) {
+                AddCategory(name, hex);
+                populateCategorySelect();
+                nameInput.value = '';
+            }
+        });
     }
-
-    StateLog();
-    // return;
-
-
-
-
     // События
 
     // Если что-то работает не так - писать в общий чат, разобъём обратно на отдельные функции списки
@@ -612,8 +800,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById("add-transaction-button").addEventListener("click", delegate(action));
-
     document.getElementById("header").addEventListener("click", delegate(action));
-
     document.getElementById("transactions-list").addEventListener("click", delegate(action));
+    document.querySelector('#ordering-sort')?.addEventListener('change', Filtering);
+    document.querySelector('#type-sort')?.addEventListener('change', Filtering);
+    document.querySelector('#type-transaction-sort')?.addEventListener('change', Filtering);
+    document.querySelector('#start-date-filter')?.addEventListener('change', Filtering);
+    document.querySelector('#end-date-filter')?.addEventListener('change', Filtering);
+    document.querySelector('.filter__search input[name="comment"]')?.addEventListener('input', Filtering);
+
+    if (filterCategoriesList) {
+        const observer = new MutationObserver(() => {
+            Filtering();
+        });
+
+        observer.observe(filterCategoriesList, {
+            childList: true,
+            subtree: true,
+        });
+    }
+
+    // Первый запуск
+    Filtering();
 });
