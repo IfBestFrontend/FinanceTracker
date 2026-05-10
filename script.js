@@ -251,16 +251,13 @@ function CheckBaseCategory() {
     // !!!
 }
 
-function CloseDialog(e) { }
+function CloseDialog(e) {}
 
 function OpenSettings() {
-    const dialog = document.getElementById('settings');
+    const dialog = document.getElementById("settings");
     if (dialog) dialog.showModal();
-
 }
-function OpenEditTransaction() {
 
-}
 function OpenEditTransaction() {}
 
 function CreateOptionsToFormTransactionCategory() {
@@ -350,22 +347,22 @@ function ShowMoreTransactions(count) {
             if (noteEl) {
                 if (tr[TRANSACTION.COMMENT] && tr[TRANSACTION.COMMENT].trim() !== "") {
                     noteEl.textContent = tr[TRANSACTION.COMMENT];
-                    noteEl.classList.add('hidden'); // по умолчанию скрыт
-                    if (moreBtn) moreBtn.style.display = ''; // показываем кнопку
+                    noteEl.classList.add("hidden"); // по умолчанию скрыт
+                    if (moreBtn) moreBtn.style.display = ""; // показываем кнопку
                 } else {
-                    noteEl.textContent = '';
-                    noteEl.classList.add('hidden');
-                    if (moreBtn) moreBtn.style.display = 'none';
+                    noteEl.textContent = "";
+                    noteEl.classList.add("hidden");
+                    if (moreBtn) moreBtn.style.display = "none";
                 }
             }
 
             // divider - скрыть для доходов
-            const dividerEl = clone.querySelector('.transaction__divider');
+            const dividerEl = clone.querySelector(".transaction__divider");
             if (dividerEl) {
-                if (tr[TRANSACTION.TYPE] === 'income') {
-                    dividerEl.style.display = 'none';
+                if (tr[TRANSACTION.TYPE] === "income") {
+                    dividerEl.style.display = "none";
                 } else {
-                    dividerEl.style.display = 'inline-block';
+                    dividerEl.style.display = "inline-block";
                 }
             }
             container.appendChild(clone);
@@ -452,7 +449,9 @@ function GetTransactionFormValues() {
         } else {
             const categoryId = Number(categoryRaw);
             if (!Number.isInteger(categoryId) || isNaN(categoryId)) {
-                throw new Error(`GetFormValues: category должен быть числовым id, получено (${categoryRaw})`);
+                throw new Error(
+                    `GetFormValues: category должен быть числовым id, получено (${categoryRaw})`
+                );
             }
             category = categoryId;
         }
@@ -490,25 +489,25 @@ function RenderBalanceChart(day) {
 
 // Переключение тёмной/светлой темы
 function ToggleTheme() {
-    const isDark = document.body.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    const toggle = document.getElementById('dark-theme-toggle');
+    const isDark = document.body.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    const toggle = document.getElementById("dark-theme-toggle");
     if (toggle) toggle.checked = isDark;
 }
 
 // Инициализация темы из localStorage
 (function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const toggle = document.getElementById('dark-theme-toggle');
-    if (savedTheme === 'light') {
-        document.body.classList.remove('dark');
+    const savedTheme = localStorage.getItem("theme");
+    const toggle = document.getElementById("dark-theme-toggle");
+    if (savedTheme === "light") {
+        document.body.classList.remove("dark");
         if (toggle) toggle.checked = false;
-    } else if (savedTheme === 'dark') {
-        document.body.classList.add('dark');
+    } else if (savedTheme === "dark") {
+        document.body.classList.add("dark");
         if (toggle) toggle.checked = true;
     } else {
-        const isDark = document.body.classList.contains('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const isDark = document.body.classList.contains("dark");
+        localStorage.setItem("theme", isDark ? "dark" : "light");
         if (toggle) toggle.checked = isDark;
     }
 })();
@@ -568,15 +567,15 @@ document.addEventListener("DOMContentLoaded", () => {
         showMoreBtn.onclick = () => ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
     }
 
-    const transactionsContainer = document.querySelector('.transaction-list');
+    const transactionsContainer = document.querySelector(".transaction-list");
     if (transactionsContainer) {
-        transactionsContainer.addEventListener('click', (event) => {
-            const btn = event.target.closest('[data-action]');
+        transactionsContainer.addEventListener("click", (event) => {
+            const btn = event.target.closest("[data-action]");
             if (!btn) return;
-            const actionName = btn.getAttribute('data-action');
+            const actionName = btn.getAttribute("data-action");
             const actionFn = actions[actionName];
             if (actionFn) {
-                const transaction = btn.closest('.transaction');
+                const transaction = btn.closest(".transaction");
                 if (transaction) {
                     const ctx = { id: transaction.dataset.id, element: transaction };
                     actionFn(ctx);
@@ -585,16 +584,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const themeToggle = document.getElementById('dark-theme-toggle');
+    const themeToggle = document.getElementById("dark-theme-toggle");
     if (themeToggle) {
-        themeToggle.addEventListener('change', ToggleTheme);
+        themeToggle.addEventListener("change", ToggleTheme);
     }
 
     StateLog();
     // return;
-
-
-
 
     // События
 

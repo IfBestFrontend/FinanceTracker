@@ -14,6 +14,9 @@
     --sub-font--color: #030f0fb2;
     --font--color: #030f0f;
 
+    --font--size: 18px;
+
+
     /*  */
     --header-height: 75px;
     --header-font-size: 18px;
@@ -45,8 +48,6 @@ body.dark {
     --font--color: #d9d9d9;
     --input--border-color: var(--sub-button--border-color);
     --checkbox--color: var(--font--color);
-
-    --font--size: 18px;
 }
 
 ::-webkit-scrollbar {
