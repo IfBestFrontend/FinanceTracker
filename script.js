@@ -13,7 +13,7 @@ const addEditTransactionDialog = document.getElementById("add-edit-transaction")
 const addEditTransactionForm = document.getElementById("add-edit-form");
 
 const action = {
-    "close-dialog": () => CloseDialog(),
+    "close-dialog": (ctx) => CloseDialog(ctx.e),
     "open-edit-transaction": (ctx) => OpenEditTransaction(ctx),
     "open-add-transaction": () => OpenAddTransaction(),
     "delete-transaction": (ctx) => DeleteTransactions(ctx.id),
@@ -23,7 +23,10 @@ const action = {
     "exclude-category": () => ExcludeCategory(),
     "delete-category": () => DeleteCategory(),
     "show-comment": (ctx) => ToggleComment(ctx.id),
-    "save-transaction": (ctx) => SaveTransaction(ctx.id),
+    "save-transaction": (ctx) => {
+        SaveTransaction(ctx.id);
+        CloseDialog(ctx.e);
+    },
     "export-data": () => ExportData(),
     "import-data": () => {},
     // "edit-transaction": () => EditTransaction(),
@@ -72,7 +75,7 @@ let filter = {};
 const BASE_CATEGORIES = [
     { [CATEGORY.ID]: 1, [CATEGORY.NAME]: "Еда", [CATEGORY.HEX]: "#1FDD00" },
     { [CATEGORY.ID]: 2, [CATEGORY.NAME]: "Транспорт", [CATEGORY.HEX]: "#6AB4FF" },
-    { [CATEGORY.ID]: 3, [CATEGORY.NAME]: "Зарплата", [CATEGORY.HEX]: "#FFA100" },
+    { [CATEGORY.ID]: 3, [CATEGORY.NAME]: "Здоровье", [CATEGORY.HEX]: "#FFA100" },
     { [CATEGORY.ID]: 4, [CATEGORY.NAME]: "Развлечения", [CATEGORY.HEX]: "#FFF500" },
     { [CATEGORY.ID]: 5, [CATEGORY.NAME]: "Жильё", [CATEGORY.HEX]: "#976AFF" },
 ];
@@ -169,27 +172,26 @@ function CollectCategoryObject(name, hex, id = null) {
 // function GetCategoryName (id) {
 // }
 
+const daysForDemo = (days) => {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return d;
+};
+
 function CreateDemoTransaction() {
-    AddTransaction("income", 50000, 0, new Date("2026-01-11"), "Аванс");
-    AddTransaction("income", 30000, 0, new Date("2026-01-12"), "Основная зарплата");
-    AddTransaction("expense", 3500, 1, new Date("2026-01-13"), "Продукты");
-    AddTransaction("expense", 1200, 1, new Date("2026-01-14"), "");
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино");
-    AddTransaction("expense", 2500, 1, new Date("2026-01-15"), "На вкусняшки");
-    AddTransaction("income", 2500, 0, new Date("2026-01-15"), "");
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино8");
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино9");
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино10");
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино11");
-    AddTransaction(
-        "expense",
-        2500,
-        4,
-        new Date("2026-01-15"),
-        `Кино12 + много символов ${"и 123 ттт-ттт 32321".repeat(1000)}`
-    );
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино13");
-    AddTransaction("expense", 2500, 4, new Date("2026-01-15"), "Кино14");
+    AddTransaction("income", 45000, 0, daysForDemo(0), "Зарплата");
+    AddTransaction("expense", 3500, 1, daysForDemo(1), "Продукты");
+    AddTransaction("expense", 1200, 1, daysForDemo(2), "");
+    AddTransaction("expense", 2500, 4, daysForDemo(3), "Кино");
+    AddTransaction("income", 2000, 0, daysForDemo(4), "От мамы на вкусняшки");
+    AddTransaction("income", 2500, 0, daysForDemo(5), "Вернули долг");
+    AddTransaction("expense", 5000, 4, daysForDemo(5), "");
+    AddTransaction("expense", 5800, 2, daysForDemo(5), "Покупка проездного на месяц");
+    AddTransaction("income", 358, 0, daysForDemo(6), "Кешбек");
+    AddTransaction("expense", 2500, 3, daysForDemo(6), "Аренда");
+    AddTransaction("expense", 1280, 3, daysForDemo(7), "");
+    AddTransaction("income", 12000, 0, daysForDemo(7), "Аванс");
+    AddTransaction("expense", 8900, 5, daysForDemo(7), "Комунальные услуги");
 }
 // Было: LoadAllTransactionList
 function LoadTransactions() {
@@ -221,7 +223,27 @@ function CheckBaseCategory() {
     // !!!
 }
 
-function CloseDialog(e) {}
+function CloseDialog(target) {
+    let dialog = null;
+
+    if (target instanceof Event) {
+        dialog = target.target.closest("dialog");
+    } else if (typeof target === "string") {
+        dialog = document.querySelector(target);
+    } else if (target instanceof HTMLElement) {
+        dialog = target.tagName === "DIALOG" ? target : target.closest("dialog");
+    }
+
+    if (!dialog) {
+        console.warn("⚠️ Диалог не найден");
+        return;
+    }
+
+    const form = dialog.querySelector("form");
+    if (form) form.reset();
+
+    dialog.close();
+}
 
 function OpenSettings() {
     const dialog = document.getElementById("settings");
@@ -561,7 +583,6 @@ function Filtering() {
                 break;
 
             case "abc": {
-                // Для income возвращаем пустую строку — они «в начале» или «в конце»
                 const getName = (tr) =>
                     tr[TRANSACTION.TYPE] === "expense"
                         ? categoryNameCache.get(tr[TRANSACTION.CATEGORY]) || ""
@@ -576,12 +597,9 @@ function Filtering() {
                 compareResult = a[TRANSACTION.DATE] - b[TRANSACTION.DATE];
                 break;
         }
-
-        // ordering: true = asc (оставляем как есть), false = desc (инвертируем)
         return ordering ? compareResult : -compareResult;
     });
 
-    // 5. Записываем в filteredTransactions ТОЛЬКО массив ID (как в ТЗ!)
     filteredTransactions = filtered.map((tr) => tr[TRANSACTION.ID]);
 }
 
@@ -700,6 +718,7 @@ function SubFilteringFuntions(transactionsListEl = document.getElementById("tran
     Filtering();
     g_currentOutputTransaction = 0;
     ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
+    RenderBalanceChart();
 }
 
 function AddTransaction(type, summ, category, date, comment) {
@@ -722,7 +741,19 @@ function EditTransaction(id, type, summ, category, date, comment) {
     return tr;
 }
 
-function DeleteTransactions(id) {}
+function DeleteTransactions(id) {
+    const numericId = Number(id);
+
+    const index = transactions.findIndex((tx) => tx[TRANSACTION.ID] === numericId);
+    if (index === -1) {
+        console.warn(`DeleteTransactions: транзакция с id=${id} не найдена`);
+        return;
+    }
+    transactions.splice(index, 1);
+
+    UpdateLocalStorageTransactions();
+    SubFilteringFuntions();
+}
 
 function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
@@ -793,10 +824,10 @@ function RenderExpenseChart() {
 
 function CreateNDayTransactionList(day) {}
 
-function RenderBalanceChart(day) {
-    // было: N_DAY_TRANSACTION_LIST
-    let nDaysTransaction = CreateNDayTransactionList(day);
-}
+// function RenderBalanceChart(day) {
+//     // было: N_DAY_TRANSACTION_LIST
+//     let nDaysTransaction = CreateNDayTransactionList(day);
+// }
 
 // Переключение тёмной/светлой темы
 function ToggleTheme() {
@@ -839,7 +870,7 @@ function StateLog() {
 }
 
 // ---------ОСНОВНОЙ КОД----------
-const IS_DEBUG = false;
+const IS_DEBUG = false  ;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Испольнение кода загрузки окна");
@@ -877,6 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     StateLog();
     Filtering();
+    RenderBalanceChart();
     ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
 
     StateLog();
@@ -992,9 +1024,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return (e) => {
             const btn = e.target.closest("[data-action]");
             if (!btn) return;
+
+            if (btn.type === "submit" || btn.dataset.action === "save-transaction") {
+                e.preventDefault();
+            }
+
             const item = btn.closest("[data-id]");
             const ctx = { e, id: item?.dataset.id, ...btn.dataset };
             const name = btn.dataset.action;
+
             console.log(`ctx, состояние:`, ctx);
             if (actionsMap[name]) actionsMap[name](ctx);
         };
@@ -1011,6 +1049,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const addEditTransactionEl = document.getElementById("add-edit-transaction");
     if (addEditTransactionEl) addEditTransactionEl.addEventListener("click", delegate(action));
+
+    const settingsEl = document.getElementById("settings");
+    if (settingsEl) settingsEl.addEventListener("click", delegate(action));
+
     //События фильтров
 
     const orderingEl = document.getElementById("ordering-sort");
@@ -1045,7 +1087,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (startDateEl) {
         startDateEl.addEventListener("change", (e) => {
             const val = e.target.value;
-            // Если поле очищено → null, иначе → timestamp
             filter["start-date"] = val ? new Date(val).getTime() : null;
             SubFilteringFuntions();
         });
