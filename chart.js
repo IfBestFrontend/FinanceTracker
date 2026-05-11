@@ -1,84 +1,67 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const ctx = document.getElementById("balanceChart").getContext("2d");
+let balanceChartInstance = null;
 
-    const days = [1, 2, 3, 4, 5, 6, 7];
+function RenderBalanceChart() {
+    const ctx = document.getElementById("balanceChart")?.getContext("2d");
+    if (!ctx) return;
 
-    const income = [45, 40, 35, 60, 15, 12, 90];
-    const expense = [25, 25, 35, 62, 17, 5, 10];
+    // Последние 7 дней
+    const now = new Date();
+    const cutoff = new Date(now);
+    cutoff.setDate(now.getDate() - 6);
+    cutoff.setHours(0, 0, 0, 0);
+    const cutoffTs = cutoff.getTime();
 
-    const balance = [];
+    // Берём объекты транзакций (не ID!) за 7 дней
+    const recentTx = transactions;
 
-    let currentBalance = 0;
+    // Уникальные даты, отсортированные по возрастанию
+    const dateSet = new Set(
+        recentTx.map(tx => new Date(tx[TRANSACTION.DATE]).toLocaleDateString("ru-RU"))
+    );
+    const labels = [...dateSet].sort((a, b) => {
+        const parse = s => { const [d, m, y] = s.split("."); return new Date(y, m - 1, d); };
+        return parse(a) - parse(b);
+    });
 
-    for (let i = 0; i < days.length; i++) {
-        currentBalance += income[i] - expense[i];
-        balance.push(currentBalance);
-    }
+    // Суммы по дате и типу
+    const incomeByDate  = Object.fromEntries(labels.map(l => [l, 0]));
+    const expenseByDate = Object.fromEntries(labels.map(l => [l, 0]));
 
-    new Chart(ctx, {
+    recentTx.forEach(tx => {
+        const label = new Date(tx[TRANSACTION.DATE]).toLocaleDateString("ru-RU");
+        if (tx[TRANSACTION.TYPE] === "income")  incomeByDate[label]  += tx[TRANSACTION.SUMM];
+        if (tx[TRANSACTION.TYPE] === "expense") expenseByDate[label] += tx[TRANSACTION.SUMM];
+    });
+
+    // Нарастающий остаток
+    let balance = 0;
+    const balanceData = labels.map(l => {
+        balance += incomeByDate[l] - expenseByDate[l];
+        return balance;
+    });
+
+    if (balanceChartInstance) balanceChartInstance.destroy();
+
+    balanceChartInstance = new Chart(ctx, {
         type: "line",
         data: {
-            labels: days,
+            labels,
             datasets: [
-                {
-                    label: "Доходы",
-                    data: income,
-                    borderColor: "#4DA3FF",
-                    backgroundColor: "transparent",
-                    tension: 0.3,
-                    pointRadius: 4
-                },
-                {
-                    label: "Расходы",
-                    data: expense,
-                    borderColor: "#FF4D4D",
-                    backgroundColor: "transparent",
-                    tension: 0.3,
-                    pointRadius: 4
-                },
-                {
-                    label: "Остаток",
-                    data: balance,
-                    borderColor: "#FFFFFF",
-                    backgroundColor: "transparent",
-                    tension: 0.3,
-                    pointRadius: 4
-                }
+                { label: "Доходы",  data: labels.map(l => incomeByDate[l]),  borderColor: "#4DA3FF", backgroundColor: "transparent", tension: 0.3, pointRadius: 4 },
+                { label: "Расходы", data: labels.map(l => expenseByDate[l]), borderColor: "#FF4D4D", backgroundColor: "transparent", tension: 0.3, pointRadius: 4 },
+                { label: "Остаток", data: balanceData,                        borderColor: "#FFFFFF",  backgroundColor: "transparent", tension: 0.3, pointRadius: 4 },
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-
             plugins: {
-                legend: {
-                    position: "bottom",
-                    labels: {
-                        color: "#ccc",
-                        usePointStyle: true, 
-                        padding: 20
-                    }
-                }
+                legend: { position: "bottom", labels: { color: "#ccc", usePointStyle: true, padding: 20 } }
             },
-
             scales: {
-                x: {
-                    ticks: {
-                        color: "#aaa"
-                    },
-                    grid: {
-                        color: "rgba(255,255,255,0.05)"
-                    }
-                },
-                y: {
-                    ticks: {
-                        color: "#aaa"
-                    },
-                    grid: {
-                        color: "rgba(255,255,255,0.05)"
-                    }
-                }
+                x: { ticks: { color: "#aaa" }, grid: { color: "rgba(255,255,255,0.05)" } },
+                y: { ticks: { color: "#aaa" }, grid: { color: "rgba(255,255,255,0.05)" } }
             }
         }
     });
-});
+}

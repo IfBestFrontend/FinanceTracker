@@ -657,6 +657,7 @@ function SubFilteringFuntions(transactionsListEl = document.getElementById("tran
     Filtering();
     g_currentOutputTransaction = 0;
     ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
+    RenderBalanceChart();
 }
 
 function AddTransaction(type, summ, category, date, comment) {
@@ -679,7 +680,19 @@ function EditTransaction(id, type, summ, category, date, comment) {
     return tr;
 }
 
-function DeleteTransactions(id) {}
+function DeleteTransactions(id) {
+    const numericId = Number(id);
+
+    const index = transactions.findIndex(tx => tx[TRANSACTION.ID] === numericId);
+    if (index === -1) {
+        console.warn(`DeleteTransactions: транзакция с id=${id} не найдена`);
+        return;
+    }
+    transactions.splice(index, 1);
+
+    UpdateLocalStorageTransactions();
+    SubFilteringFuntions();
+}
 
 function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
@@ -750,10 +763,10 @@ function RenderExpenseChart() {
 
 function CreateNDayTransactionList(day) {}
 
-function RenderBalanceChart(day) {
-    // было: N_DAY_TRANSACTION_LIST
-    let nDaysTransaction = CreateNDayTransactionList(day);
-}
+// function RenderBalanceChart(day) {
+//     // было: N_DAY_TRANSACTION_LIST
+//     let nDaysTransaction = CreateNDayTransactionList(day);
+// }
 
 // Переключение тёмной/светлой темы
 function ToggleTheme() {
@@ -834,6 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     StateLog();
     Filtering();
+    RenderBalanceChart();
     ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
 
     StateLog();
