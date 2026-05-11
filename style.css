@@ -9,6 +9,9 @@
     --sub-button--bg-color: none;
     --sub-button--border-color: #030f0f80;
     --input--border-color: var(--sub-button--border-color);
+    --filter-input-bg: #FFFFFF;
+    --filter-input-border: #CCCCCC;
+    --filter-input-color: #030F0F;
 
     /* B2 примерно равен прозрачности 70 (~69.8) */
     --sub-font--color: #030f0fb2;
@@ -27,14 +30,15 @@
     --checkbox--color: var(--font--color);
 
     /* sub-цвета (временно) */
-    --color-food: #1fdd00;
-    --color-transport: #6ab4ff;
-    --color-entertainment: #ffa100;
-    --color-health: #fff500;
-    --color-house: #976aff;
-    --color-custom: #0b4539;
-    --income-color: #6ab4ff;
-    --expense-color: #ff3333;
+    --color-food: #1FDD00;
+    --color-transport: #6AB4FF;
+    --color-entertainment: #FFA100;
+    --color-health: #FFF500;
+    --color-house: #976AFF;
+    --color-custom: #0B4539;
+    --income-color: #6AB4FF;
+    --expense-color: #FF3333;
+
 }
 
 body.dark {
@@ -48,6 +52,11 @@ body.dark {
     --font--color: #d9d9d9;
     --input--border-color: var(--sub-button--border-color);
     --checkbox--color: var(--font--color);
+    --filter-input-bg: #021A1A;
+    --filter-input-border: #D9D9D980;
+    --filter-input-color: #D9D9D9;
+
+    --font--size: 18px;
 }
 
 ::-webkit-scrollbar {
@@ -137,6 +146,7 @@ option {
 input[type="date"] {
     position: relative;
 }
+
 input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 0;
     position: absolute;
@@ -243,11 +253,11 @@ input[type="date"] {
 
 /* Контейнер */
 .filter {
-    /* width: min(1080px, calc(100% - 32px)); */
     width: 100%;
     padding: 22px 24px 18px;
     border-radius: 22px;
-    background: linear-gradient(180deg, #042021 0%, #03191a 100%);
+    background: var(--element--bg-color);
+    /* вместо градиента */
 }
 
 /* Верхняя строка */
@@ -285,16 +295,14 @@ input[type="date"] {
 .filter__date {
     height: 32px;
     width: auto;
-    min-width: 0;
-    max-width: 132px;
-    padding: 0 8px;
+    min-width: 110px;
+    padding: 0 6px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background: transparent;
-    color: var(--font--color);
-    /* font-size: 14px; */
+    border: 1px solid var(--filter-input-border);
+    background: var(--filter-input-bg);
+    color: var(--filter-input-color);
+    font-size: 12px;
     outline: none;
-    background-color: #021a1a;
 }
 
 .filter__date::-webkit-inner-spin-button,
@@ -302,6 +310,7 @@ input[type="date"] {
     -webkit-appearance: none;
     margin: 0;
 }
+
 .filter__date {
     -moz-appearance: textfield;
 }
@@ -310,9 +319,9 @@ input[type="date"] {
     margin-left: auto;
 }
 
-label.ordering-sort {
-}
-#ordering-sort:checked + label.ordering-sort {
+label.ordering-sort {}
+
+#ordering-sort:checked+label.ordering-sort {
     transform: scale(-1, -1);
 }
 
@@ -375,18 +384,23 @@ label.ordering-sort {
 .tag--green {
     background: #43e81f;
 }
+
 .tag--blue {
     background: #62a8ff;
 }
+
 .tag--orange {
     background: #ffad1f;
 }
+
 .tag--yellow {
     background: #ffe81f;
 }
+
 .tag--purple {
     background: #a76cff;
 }
+
 .tag--teal {
     background: #0f6f66;
     color: #eaffff;
@@ -405,7 +419,7 @@ label.ordering-sort {
     height: 36px;
     padding: 0 10px;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid var(--filter-input-border);
     background: transparent;
     color: var(--font--color);
     outline: none;
@@ -464,6 +478,7 @@ label.ordering-sort {
     flex-direction: row;
     justify-content: space-between;
 }
+
 .transaction__left {
     display: flex;
     align-items: center;
@@ -481,6 +496,7 @@ label.ordering-sort {
 .transaction__dot--expense-color {
     background: #ff3b3b;
 }
+
 .transaction__dot--income-color {
     background: #4ea3ff;
 }
@@ -494,7 +510,7 @@ label.ordering-sort {
 .transaction__divider {
     width: 1px;
     height: 26px;
-    background: rgba(255, 255, 255, 0.55);
+    background-color: var(--font--color);
 }
 
 .transaction__category {
@@ -558,15 +574,10 @@ label.ordering-sort {
     margin: 0;
     margin-bottom: 5px;
     color: var(--sub-font--color);
-}
-
-.transaction__note {
     overflow: hidden;
+    display: none;
     max-height: 200px;
-    transition:
-        max-height 0.3s ease,
-        opacity 0.2s ease,
-        margin 0.2s ease;
+    transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.2s ease;
     opacity: 1;
     margin-bottom: 5px;
 }
@@ -574,7 +585,8 @@ label.ordering-sort {
 .transaction__note.hidden {
     max-height: 0;
     opacity: 0;
-    margin-bottom: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .transaction__more img {
@@ -799,21 +811,27 @@ label.ordering-sort {
 .legend-food .legend-dot {
     background-color: var(--color-food);
 }
+
 .legend-transport .legend-dot {
     background-color: var(--color-transport);
 }
+
 .legend-entertainment .legend-dot {
     background-color: var(--color-entertainment);
 }
+
 .legend-health .legend-dot {
     background-color: var(--color-health);
 }
+
 .legend-house .legend-dot {
     background-color: var(--color-house);
 }
+
 .legend-custom .legend-dot {
     background-color: var(--color-custom);
 }
+
 
 /* для settings */
 
@@ -861,22 +879,28 @@ label.ordering-sort {
 .settings .legend-food {
     background-color: var(--color-food);
 }
+
 .settings .legend-transport {
     background-color: var(--color-transport);
 }
+
 .settings .legend-health {
     background-color: var(--color-health);
 }
+
 .settings .legend-entertainment {
     background-color: var(--color-entertainment);
 }
+
 .settings .legend-house {
     background-color: var(--color-house);
 }
+
 .settings .legend-custom {
     background-color: var(--color-custom);
-    color: #ffffff;
+    color: #FFFFFF;
 }
+
 .settings .legend-dot {
     display: none;
 }
@@ -899,6 +923,19 @@ label.ordering-sort {
     background-color: transparent;
     color: var(--font--color);
     padding: 0 12px;
+}
+
+#dark-theme-toggle {
+    margin-left: 10px;
+    transform: scale(1.2);
+    vertical-align: middle;
+}
+
+.settings__theme {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .choose-color {
@@ -1068,6 +1105,7 @@ label.ordering-sort {
     cursor: pointer;
     background-color: #00000000;
 }
+
 .theme-toggle label {
     display: flex;
     align-items: center;
@@ -1097,10 +1135,7 @@ label.ordering-sort {
     --slider-left: 5px;
     content: "";
     position: absolute;
-    top: calc(
-        var(--slider--height) / 2 - var(--slider-circle--heigth) / 2 - var(--slider--border-size) /
-            2
-    );
+    top: calc(var(--slider--height) / 2 - var(--slider-circle--heigth) / 2 - var(--slider--border-size) / 2);
     left: var(--slider-left);
     width: var(--slider-circle--width);
     height: var(--slider-circle--heigth);
@@ -1109,13 +1144,11 @@ label.ordering-sort {
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-toggle input:checked + label .toggle-slider::before {
-    transform: translateX(
-        calc(var(--slider--width) - var(--slider-circle--width) - var(--slider-left) * 2)
-    );
+.theme-toggle input:checked+label .toggle-slider::before {
+    transform: translateX(calc(var(--slider--width) - var(--slider-circle--width) - var(--slider-left) * 2));
 }
 
-#dark-theme-toggle:focus-visible + .toggle-slider {
+#dark-theme-toggle:focus-visible+.toggle-slider {
     outline: 1px solid var(--checkbox--color);
     outline-width: 1px;
 }
@@ -1145,16 +1178,17 @@ label.ordering-sort {
 }
 
 /* Исправить на соответвующее макету */
-#form-transaction-type-income:checked + label.type-btn,
-#form-transaction-type-expense:checked + label.type-btn {
-    border-color: #4caf50; /* или твой акцентный цвет */
+#form-transaction-type-income:checked+label.type-btn,
+#form-transaction-type-expense:checked+label.type-btn {
+    border-color: #4caf50;
+    /* или твой акцентный цвет */
     /* background: #4CAF50; */
     color: white;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
 
-#form-transaction-type-expense:checked + label.type-btn {
+#form-transaction-type-expense:checked+label.type-btn {
     border-color: #f44336;
     /* background: #f44336; */
     box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
