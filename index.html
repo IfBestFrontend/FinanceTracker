@@ -117,7 +117,7 @@
 
                 <div class="two-buttons">
                     <button data-action="close-dialog" type="button">Отмена</button>
-                    <button data-action="" type="submit">Сохранить</button>
+                    <button data-action="save-transaction" type="submit">Сохранить</button>
                 </div>
             </form>
         </dialog>
@@ -128,7 +128,7 @@
                 <button
                     class="close-dialog-button"
                     type="button"
-                    onclick="window.settings.close()"
+                    data-action="close-dialog"
                     aria-label="Закрыть настройки"
                 >
                     <img src="assets/cancel-close-cross-delete_114048.svg" alt="" />
@@ -169,7 +169,7 @@
 
                 <div class="settings__theme">
                     <div class="theme-toggle">
-                        <input id="dark-theme-toggle" type="checkbox" name="theme-toggle" />
+                        <input id="dark-theme-toggle" type="checkbox" name="theme-toggle" hidden  />
                         <label for="dark-theme-toggle">
                             <span>Тёмная тема</span>
                             <span class="toggle-slider"> </span>
@@ -383,10 +383,6 @@
             <section class="transactions">
                 <div class="transaction-list" id="transactions-list"></div>
                 <button id="show-more" data-action="show-more">Показать ещё</button>
-                <!-- Затычка: -->
-                <button type="button" onclick="window.addEditTransaction.showModal()">
-                    Добавить/редактировать
-                </button>
                 <button
                     class="floating-add"
                     type="button"
