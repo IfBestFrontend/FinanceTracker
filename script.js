@@ -411,7 +411,50 @@ function FillTransactionCard(tr) {
     return clone;
 }
 
-function FillCategoryItem(id, isDeletrMode = false) {}
+function getContrastColor(hex) {
+    hex = hex.replace('#', '');
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    const brightness = (r + g + b) / 3;
+    return brightness >= 128 ? '#000000' : '#FFFFFF';
+}
+
+function FillCategoryItem(id, isDeleteMode = false) {
+    const template = document.getElementById('category-item');
+    if (!template) return null;
+
+    const clone = template.content.cloneNode(true);
+    const container = clone.querySelector('.category-item');
+    if (!container) return null;
+    container.dataset.id = id;
+
+    const category = categories.find(cat => cat[CATEGORY.ID] === id);
+    if (!category) return null;
+
+    const nameSpan = container.querySelector('[data-field="category-name"]');
+    if (nameSpan) nameSpan.textContent = category[CATEGORY.NAME];
+
+    const bgColor = category[CATEGORY.HEX] || '#CCCCCC';
+    container.style.backgroundColor = bgColor;
+    container.style.color = getContrastColor(bgColor);
+
+    const button = container.querySelector('button');
+    if (button) {
+        const isBase = (id >= 1 && id <= 5);
+        if (isDeleteMode) {
+            if (isBase) {
+                button.remove();
+            } else {
+                button.dataset.action = 'delete-category';
+            }
+        } else {
+            button.dataset.action = 'exclude-category';
+        }
+    }
+
+    return clone;
+}
 
 //Основные функции
 function ShowMoreTransactions(count) {
