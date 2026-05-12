@@ -276,6 +276,7 @@ function OpenEditTransaction(ctx) {
     });
 
     addEditTransactionDialog.showModal();
+    UpdateCategorySelectState(); 
 }
 
 function OpenAddTransaction() {
@@ -284,6 +285,7 @@ function OpenAddTransaction() {
     addEditTransactionDialog.querySelector("[data-modal-title]").textContent =
         UI_TEXT.transaction_addTitle;
     addEditTransactionDialog.showModal();
+    UpdateCategorySelectState();
 }
 
 function SaveTransaction(id = null) {
@@ -908,6 +910,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     StateLog();
     Filtering();
+    UpdateFilterCategoryState();
     RenderBalanceChart();
     ShowMoreTransactions(TRANSACTIONS_BATCH_SIZE);
 
@@ -921,6 +924,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (themeToggle) {
         themeToggle.addEventListener("change", ToggleTheme);
     }
+
+    const typeRadios = document.querySelectorAll('input[name="type"]');
+    typeRadios.forEach(radio => {
+        radio.addEventListener("change", UpdateCategorySelectState);
+    });
 
     // function populateCategorySelect() {
     //     const categorySelect = document.getElementById('category-sort');
@@ -1076,6 +1084,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeTransEl) {
         typeTransEl.addEventListener("change", (e) => {
             filter["type-transaction"] = e.target.value;
+            UpdateFilterCategoryState();
             SubFilteringFuntions();
         });
     }
@@ -1105,5 +1114,37 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             SubFilteringFuntions();
         });
+    }
+
+    function UpdateCategorySelectState() {
+        const categorySelect = document.getElementById("form-transaction-category");
+        if (!categorySelect) return;
+
+        const selectedType = document.querySelector('input[name="type"]:checked')?.value;
+
+        if (selectedType === "expense") {
+            categorySelect.disabled = true;
+            // Сбрасываем выбор, чтобы не передавалось старое значение
+            categorySelect.value = "";
+            // Показываем заглушку
+            const placeholder = categorySelect.querySelector('option[data-placeholder]');
+            if (placeholder) placeholder.selected = true;
+        } else if (selectedType === "income") {
+            categorySelect.disabled = false;
+        }
+    }
+
+    function UpdateFilterCategoryState() {
+        const typeVal = document.getElementById("type-transaction-sort")?.value;
+        const categorySelect = document.getElementById("category-sort");
+        if (!categorySelect) return;
+
+        if (typeVal === "expense") {
+            categorySelect.disabled = true;
+            categorySelect.value = ""; // сбрасываем выбор
+        } else {
+            // "expense" или "all" — категории доступны
+            categorySelect.disabled = false;
+        }
     }
 });
