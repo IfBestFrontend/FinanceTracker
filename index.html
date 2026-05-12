@@ -51,13 +51,14 @@
         <template id="category-item">
             <div type="button" class="category-item" data-id="">
                 <span data-field="category-name"></span>
-                <button data-action="" aria-label="" class="btn__del">×</button>
+                <button data-action="exclude-category" aria-label="Исключить категорию" class="btn__del">×</button>
             </div>
         </template>
         <template id="category-legend-item">
             <div type="button" class="category-item" data-id="">
                 <span data-field="category-hex"></span>
-                <span data-field="category-name">×</span>
+                <span data-field="category-name"></span>
+                <button data-action="exclude-category" aria-label="Исключить категорию" class="btn__del">×</button>
             </div>
         </template>
         <dialog id="add-edit-transaction" class="add-edit-transaction">

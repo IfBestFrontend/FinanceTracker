@@ -23,7 +23,7 @@ const action = {
     "toggle-theme": () => ToggleTheme(),
     "show-more": () => ShowMoreTransactions(),
     "open-settings": () => OpenSettings(),
-    "exclude-category": () => ExcludeCategory(),
+    "exclude-category": (ctx) => ExcludeCategory(ctx.id),
     "delete-category": () => DeleteCategory(),
     "show-comment": (ctx) => ToggleComment(ctx.id),
     "save-transaction": (ctx) => {
@@ -884,6 +884,28 @@ function ToggleTheme() {
     }
 })();
 
+function ExcludeCategory(id) {
+    const numericId = Number(id);
+    if (isNaN(numericId)) {
+        console.warn(`ExcludeCategory: некорректный id (${id})`);
+        return;
+    }
+    filter["categories"] = filter["categories"].filter((catId) => catId !== numericId);
+
+    const legendEl = document.getElementById("legend-category-list");
+    if (legendEl) {
+        const item = legendEl.querySelector(`[data-id="${numericId}"]`);
+        if (item) item.remove();
+    }
+    const filterEl = document.getElementById("filter-categories-list");
+    if (filterEl) {
+        const item = filterEl.querySelector(`[data-id="${numericId}"]`);
+        if (item) item.remove();
+    }
+
+    SubFilteringFuntions();
+}
+
 function DeleteCategory() {}
 
 //Отладка
@@ -1089,6 +1111,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const settingsEl = document.getElementById("settings");
     if (settingsEl) settingsEl.addEventListener("click", delegate(action));
+
+    const filterCategoriesEl = document.getElementById("filter-categories-list");
+    if (filterCategoriesEl) filterCategoriesEl.addEventListener("click", delegate(action));
+
+    const legendCategoryEl = document.getElementById("legend-category-list");
+    if (legendCategoryEl) legendCategoryEl.addEventListener("click", delegate(action));
 
     //События фильтров
 
