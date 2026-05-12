@@ -164,6 +164,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 input[type="date"] {
     padding-right: 12px;
 }
+/* button[data-action="close-dialog"] {
+    color: var(--font--color); 
+} */
 
 /* Элементы общего использования */
 
@@ -236,6 +239,11 @@ input[type="date"] {
     border-color: transparent;
     text-align: center;
     border-radius: 15px;
+}
+
+.add-edit-transaction button[type="submit"]{
+    background-color: var(--accent-button--bg-color);
+    color: #030f0f;
 }
 
 .add-edit-transaction .label-input {
@@ -361,6 +369,7 @@ label.ordering-sort {
 .btn__del {
     border: none;
     background: none;
+    color: gray;
 }
 
 .btn__del__cos {
@@ -674,6 +683,20 @@ label.ordering-sort {
     padding: 10px;
 }
 
+.settings button:disabled{
+    background-color: var(--settings--bg-color);
+    color: grey;
+    border: 1px solid gray;
+}
+
+.settings input[type="text"] {
+    flex-grow: 1;
+    background-color: var(--settings--bg-color);
+    border: 1px solid var(--input--border-color);
+    border-radius: 12px;
+    padding-left: 10px;
+}
+
 .settings-icon {
     width: 100%;
     height: 100%;
@@ -831,17 +854,40 @@ label.ordering-sort {
     color: var(--font--color);
 }
 
-.settings__title {
+#settings {
+    margin: auto;
+}
+.settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+    background-color: var(--settings--bg-color);
+}
+.setting-bottom {
+    width: 100%;
+    display: flex;
+    /* align-items: center; */
+    justify-content: space-between;
+}
+
+/* .settings__title {
     text-align: center;
     font-size: 24px;
     font-weight: 400;
     margin-bottom: 34px;
-}
+} */
 
 .settings__form {
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 24px;
+}
+
+.settings input [name="name"] {
+    flex-grow: 1;
 }
 
 .settings__row {
@@ -906,24 +952,31 @@ label.ordering-sort {
     font-size: 16px;
 }
 
-.settings__add input {
-    flex: 1;
-    height: 34px;
-    border-radius: 8px;
-    border: 1px solid var(--input--border-color);
-    background-color: transparent;
-    color: var(--font--color);
-    padding: 0 12px;
-}
-
 #dark-theme-toggle {
     margin-left: 10px;
     transform: scale(1.2);
     vertical-align: middle;
 }
 
+.settings__all-category{
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    flex-direction: column;
+}
+#settings-category-list {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.category-item {
+    padding: 5px 5px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
 .settings__theme {
-    margin-top: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -939,9 +992,6 @@ label.ordering-sort {
     font-size: 20px;
 }
 
-.choose-color--color {
-    flex: 0 0 34px;
-}
 
 /*  */
 /*  */
@@ -995,16 +1045,6 @@ label.ordering-sort {
     overflow-wrap: anywhere;
 }
 
-.close-dialog-button {
-    width: 24px;
-    height: 24px;
-    top: 30px;
-    right: 30px;
-    font-size: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .close-dialog-button img {
     width: 18px;
@@ -1020,11 +1060,6 @@ label.ordering-sort {
     overflow: visible;
     flex-direction: column;
     display: flex;
-}
-
-.settings__title {
-    margin-bottom: 28px;
-    font-size: 24px;
 }
 
 .settings__form {
@@ -1175,16 +1210,15 @@ label.ordering-sort {
 /* Исправить на соответвующее макету */
 #form-transaction-type-income:checked + label.type-btn,
 #form-transaction-type-expense:checked + label.type-btn {
-    border-color: #4caf50;
-    color: white;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    border-color: var(--income-color);
+    color: var(--income-color);
+    /* box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3); */
 }
 
 #form-transaction-type-expense:checked + label.type-btn {
-    border-color: #f44336;
-    /* background: #f44336; */
-    box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+    border-color: var(--expense-color);
+    color: var(--expense-color);
+    /* box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3); */
 }
 
 .type-btn {

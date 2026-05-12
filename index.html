@@ -142,54 +142,62 @@
                     data-action="close-dialog"
                     aria-label="Закрыть настройки"
                 >
-                    <img src="assets/cancel-close-cross-delete_114048.svg" alt="" />
+                    ×
+                    <!-- <img src="assets/cancel-close-cross-delete_114048.svg" alt="" /> -->
                 </button>
                 <h2 class="settings__title">Настройки</h2>
-                <div class="">
+                <div class="settings__all-category">
+                    <span>Список категорий:</span>
                     <div id="settings-category-list"></div>
-                    <form class="settings__form settings__add" action="" id="">
-                        <label for="new-category-name">Добавить категорию:</label>
-                        <input
-                            name="name"
-                            id="new-category-name"
-                            type="text"
-                            placeholder="Название"
-                            required
-                        />
-                        <input
-                            name="hex"
-                            id="category-hex"
-                            type="color"
-                            class="choose-color choose-color--color"
-                            aria-label="Выбрать цвет"
-                            required
-                        />
-                        <button
-                            type="button"
-                            class="choose-color"
-                            aria-label="Добавить категорию"
-                            onclick="SaveCategory()"
-                        >
-                            +
-                        </button>
-                    </form>
                 </div>
-
-                <div class="settings__theme">
-                    <div class="theme-toggle">
-                        <input id="dark-theme-toggle" type="checkbox" name="theme-toggle" hidden />
-                        <label for="dark-theme-toggle">
-                            <span>Тёмная тема</span>
-                            <span class="toggle-slider"> </span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="settings__bottom">
-                    <button type="button" class="default-button default-button--secondary">
-                        Импорт JSON
+                <form class="settings__form" action="" id="">
+                    <label for="new-category-name">Добавить категорию:</label>
+                    <input
+                        name="name"
+                        id="new-category-name"
+                        type="text"
+                        placeholder="Название"
+                        required
+                    />
+                    <input
+                        name="hex"
+                        id="category-hex"
+                        type="color"
+                        class="choose-color choose-color--color"
+                        aria-label="Выбрать цвет"
+                        required
+                    />
+                    <button
+                        type="button"
+                        class="choose-color"
+                        aria-label="Добавить категорию"
+                        onclick="SaveCategory()"
+                    >
+                        +
                     </button>
-                    <button type="button" class="default-button">Экспорт JSON</button>
+                </form>
+
+                <div class="setting-bottom">
+                    <div class="settings__theme">
+                        <div class="theme-toggle">
+                            <input
+                                id="dark-theme-toggle"
+                                type="checkbox"
+                                name="theme-toggle"
+                                hidden
+                            />
+                            <label for="dark-theme-toggle">
+                                <span>Тёмная тема</span>
+                                <span class="toggle-slider"> </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings__bottom">
+                        <button disabled type="button" class="default-button default-button--secondary">
+                            Импорт JSON
+                        </button>
+                        <button disabled type="button" class="default-button">Экспорт JSON</button>
+                    </div>
                 </div>
             </div>
         </dialog>
