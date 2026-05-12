@@ -1167,14 +1167,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const selectedType = document.querySelector('input[name="type"]:checked')?.value;
 
-        if (selectedType === "expense") {
+        if (selectedType === "income") {
             categorySelect.disabled = true;
-            // Сбрасываем выбор, чтобы не передавалось старое значение
             categorySelect.value = "";
-            // Показываем заглушку
             const placeholder = categorySelect.querySelector("option[data-placeholder]");
             if (placeholder) placeholder.selected = true;
-        } else if (selectedType === "income") {
+        } else if (selectedType === "expense") {
             categorySelect.disabled = false;
         }
     }
@@ -1184,11 +1182,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const categorySelect = document.getElementById("category-sort");
         if (!categorySelect) return;
 
-        if (typeVal === "expense") {
+        if (typeVal === "income") {
             categorySelect.disabled = true;
-            categorySelect.value = ""; // сбрасываем выбор
+            categorySelect.value = ""; 
         } else {
-            // "expense" или "all" — категории доступны
+            
             categorySelect.disabled = false;
         }
     }
