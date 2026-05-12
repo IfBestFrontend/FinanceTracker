@@ -323,8 +323,8 @@ function SaveTransaction(id = null) {
     }
 }
 
-function CreateOptionsToFormTransactionCategory() {
-    const select = document.getElementById("form-transaction-category");
+function CreateOptionsToFormTransactionCategory(selectId = "form-transaction-category") {
+    const select = document.getElementById(selectId);
     if (!select) return;
 
     const selectedValue = select.value;
@@ -788,6 +788,7 @@ function AddCategory(name, hex) {
     categories.push(CollectCategoryObject(name, hex));
     UpdateLocalStorageCategories();
     CreateOptionsToFormTransactionCategory();
+    CreateOptionsToFormTransactionCategory("category-sort");
     populateCategorySelect(); // обновляем выпадающий список фильтра
 }
 
@@ -930,6 +931,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     LoadCategories();
     CreateOptionsToFormTransactionCategory();
+    CreateOptionsToFormTransactionCategory("category-sort");
     LoadTransactions();
 
     filteredTransactions = [...transactions];
@@ -1118,6 +1120,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // const categorySortEl = document.getElementById("category-sort");
     // if () {} //До поправки html
+
+    const categorySortEl = document.getElementById("category-sort");
+    if (categorySortEl) {
+        categorySortEl.addEventListener("change", (e) => {
+            const selectedId = Number(e.target.value);
+            if (!isNaN(selectedId) && selectedId !== 0) {
+                // Добавляем в фильтр, если ещё не выбрана
+                if (!filter["categories"].includes(selectedId)) {
+                    filter["categories"].push(selectedId);
+                }
+            }
+            SubFilteringFuntions();
+            // Сбрасываем select обратно на заглушку после выбора
+            categorySortEl.value = "";
+        });
+    }
 
     const startDateEl = document.getElementById("start-date-sort");
     if (startDateEl) {
