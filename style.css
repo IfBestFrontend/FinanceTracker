@@ -790,6 +790,12 @@ label.ordering-sort {
     flex-shrink: 0;
 }
 
+.category-legend-item {
+    display: flex;
+    gap: 5px;
+    padding: 1;
+}
+
 .legend-title {
     display: block;
 }

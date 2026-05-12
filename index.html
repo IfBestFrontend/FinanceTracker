@@ -12,7 +12,6 @@
         </script> -->
     </head>
     <body class="dark">
-        
         <template id="transaction">
             <div class="transaction has-bg-element" data-id="">
                 <div class="transaction__top">
@@ -49,16 +48,15 @@
             </div>
         </template>
         <template id="category-item">
-            <div type="button" class="category-item" data-id="">
+            <div class="category-item" data-id="">
                 <span data-field="category-name"></span>
                 <button data-action="exclude-category" aria-label="Исключить категорию" class="btn__del">×</button>
             </div>
         </template>
-        <template id="category-legend-item">
-            <div type="button" class="category-item" data-id="">
+        <template id="category-legend-item" >
+            <div class="category-legend-item" data-id="">
                 <span data-field="category-hex"></span>
                 <span data-field="category-name"></span>
-                <button data-action="exclude-category" aria-label="Исключить категорию" class="btn__del">×</button>
             </div>
         </template>
         <dialog id="add-edit-transaction" class="add-edit-transaction">
@@ -104,7 +102,7 @@
                 <div class="label-input">
                     <label for="form-transaction-category">Категория</label>
                     <select id="form-transaction-category" name="category">
-                        <option selected disabled hidden data-placeholder>Выберите категорию</option>
+                        <option selected disabled hidden data-placeholder>Выберите</option>
                     </select>
                 </div>
 
@@ -141,34 +139,18 @@
                     <img src="assets/cancel-close-cross-delete_114048.svg" alt="" />
                 </button>
                 <h2 class="settings__title">Настройки</h2>
-                <!-- <div class="settings__row settings__categories">
-                    <span class="settings__text">Редактирование категорий:</span>
-                    <span class="legend-item legend-food"><span class="legend-dot"></span><span
-                            class="legend-title">Еда</span></span>
-                    <span class="legend-item legend-transport"><span class="legend-dot"></span><span
-                            class="legend-title">Транспорт</span></span>
-                    <span class="legend-item legend-health"><span class="legend-dot"></span><span
-                            class="legend-title">Здоровье</span></span>
-                    <span class="legend-item legend-entertainment"><span class="legend-dot"></span><span
-                            class="legend-title">Развлечения</span></span>
-                    <span class="legend-item legend-house"><span class="legend-dot"></span><span
-                            class="legend-title">Жильё</span></span>
-                    <span class="legend-item legend-custom"><span class="legend-dot"></span><span
-                            class="legend-title">Кастомная</span></span>
-                    <span class="legend-item legend-custom"><span class="legend-dot"></span><span
-                            class="legend-title">Кастомная</span></span>
-                </div> -->
-                <form class="settings__form" action="">
+                
+                <form class="settings__form" action="" id="">
                     <div class="settings__add">
-                        <label for="category-name">Добавить категорию:</label>
-                        <input name="name" id="category-name" type="text" placeholder="Название" />
+                        <label for="new-category-name">Добавить категорию:</label>
+                        <input name="name" id="new-category-name" type="text" placeholder="Название" />
                         <input
                             name="hex"
                             type="color"
                             class="choose-color choose-color--color"
                             aria-label="Выбрать цвет"
                         />
-                        <button type="button" class="choose-color" aria-label="Добавить категорию">
+                        <button type="submit" class="choose-color" aria-label="Добавить категорию">
                             +
                         </button>
                     </div>
@@ -176,7 +158,7 @@
 
                 <div class="settings__theme">
                     <div class="theme-toggle">
-                        <input id="dark-theme-toggle" type="checkbox" name="theme-toggle" hidden  />
+                        <input id="dark-theme-toggle" type="checkbox" name="theme-toggle" hidden />
                         <label for="dark-theme-toggle">
                             <span>Тёмная тема</span>
                             <span class="toggle-slider"> </span>
@@ -235,7 +217,7 @@
                 </div>
 
                 <div id="chart-legend" class="chart-legend has-bg-element">
-                    <span class="legend-stats">
+                    <div class="legend-stats">
                         <span class="legend-stat">
                             <span class="legend-stat__label">За 7 дней:</span>
                         </span>
@@ -261,9 +243,7 @@
 
                     <div class="legend-line"></div>
 
-                    <div id="legend-category-list" class="legend-list">
-                        
-                    </span>
+                    <div id="legend-category-list" class="legend-list"></div>
                 </div>
             </section>
             <section id="filter" class="filter has-bg-element">
@@ -303,11 +283,6 @@
                                 id="category-sort"
                             >
                                 <option selected disabled>Выбрать</option>
-                                <!-- <option>Еда</option>
-                                <option>Транспорт</option>
-                                <option>Развлечения</option>
-                                <option>Здоровье</option>
-                                <option>Жильё</option> -->
                             </select>
                         </div>
                     </div>
@@ -331,12 +306,15 @@
                     </div>
                 </div>
 
-                <div class="filter__tags" id="filter-categories-list">
-
-                </div>
+                <div class="filter__tags" id="filter-categories-list"></div>
                 <form class="filter__search" action="">
-                    <input type="text" name="comment" id="input-comment-filter" placeholder="Комментарий" />
-                    <button id="comment-found">
+                    <input
+                        type="text"
+                        name="comment"
+                        id="input-comment-filter"
+                        placeholder="Комментарий"
+                    />
+                    <button id="comment-found" type="button">
                         <img src="assets\Лупа___.png" alt="" />
                     </button>
                 </form>
@@ -357,7 +335,7 @@
         </main>
         <footer>
             <!-- Пока пустует -->
-        </footer>        
+        </footer>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="script.js" defer></script>
         <script src="chart.js" defer></script>
