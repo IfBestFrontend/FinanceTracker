@@ -817,11 +817,16 @@ function DeleteTransactions(id) {
 }
 
 function AddCategory(name, hex) {
-    categories.push(CollectCategoryObject(name, hex));
+    const cat = CollectCategoryObject(name, hex);
+    categories.push(cat);
     UpdateLocalStorageCategories();
     CreateOptionsToFormTransactionCategory();
     CreateOptionsToFormTransactionCategory("category-sort");
-    // populateCategorySelect(); // обновляем выпадающий список фильтра
+
+    const setCatListEl = document.getElementById("settings-category-list");
+    if (setCatListEl) {
+        setCatListEl.appendChild(FillCategoryItem(cat[CATEGORY.ID], true));
+    }
 }
 
 function GetTransactionFormValues() {
@@ -941,30 +946,22 @@ function ExcludeCategory(id) {
 function DeleteCategory(id) {
     const numericId = Number(id);
 
-    const index = categories.findIndex((cat) => cat[CATEGORY.ID] === Number(numericId));
+    const index = categories.findIndex((cat) => cat[CATEGORY.ID] === numericId);
     if (index === -1) {
         console.warn(`DeleteCategory: категория с id=${id} не найдена`);
         return;
     }
     categories.splice(index, 1);
-
     UpdateLocalStorageCategories();
 
-    document
-        .getElementById("legend-category-list")
-        ?.querySelector(`[data-id="${numericId}"]`)
-        ?.remove();
-
-    document
-        .getElementById("filter-categories-list")
-        ?.querySelector(`[data-id="${numericId}"]`)
-        ?.remove();
+    document.getElementById("legend-category-list")?.querySelector(`[data-id="${numericId}"]`)?.remove();
+    document.getElementById("filter-categories-list")?.querySelector(`[data-id="${numericId}"]`)?.remove();
+    document.getElementById("settings-category-list")?.querySelector(`[data-id="${numericId}"]`)?.remove();
 
     CreateOptionsToFormTransactionCategory();
     CreateOptionsToFormTransactionCategory("category-sort");
 
     filter["categories"] = filter["categories"].filter((catId) => catId !== numericId);
-
     SubFilteringFuntions();
 }
 
