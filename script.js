@@ -24,7 +24,16 @@ const action = {
     "show-more": () => ShowMoreTransactions(),
     "open-settings": () => OpenSettings(),
     "exclude-category": (ctx) => ExcludeCategory(ctx.id),
-    "delete-category": (ctx) => DeleteCategory(ctx.id),
+    "delete-category": (ctx) => {
+        const tr = transactions.find((tr) => tr[TRANSACTION.CATEGORY] === Number(ctx.id));
+        console.log(tr)
+        if (tr) {
+            alert("Невозможно удалить Категрию! Для начала удалите связанные транзакции")
+        } else {
+            if (confirm("Вы подтверждаете удаление транзакции? Ваше действие будет необратимо"))
+                DeleteCategory(ctx.id);
+        }
+    },
     "show-comment": (ctx) => ToggleComment(ctx.id),
     "save-transaction": (ctx) => {
         SaveTransaction(ctx.id);
@@ -248,7 +257,16 @@ function CloseDialog(target) {
     dialog.close();
 }
 
+const setCatListEl = document.getElementById("settings-category-list");
 function OpenSettings() {
+    if (setCatListEl) {
+        setCatListEl.replaceChildren();
+
+        categories.forEach((cat) => {
+            console.log(cat);
+            setCatListEl.appendChild(FillCategoryItem(cat.id, true));
+        });
+    }
     const dialog = document.getElementById("settings");
     if (dialog) dialog.showModal();
 }
@@ -257,7 +275,7 @@ function OpenEditTransaction(ctx) {
         console.error("Нет data-id для редактирования");
         return;
     }
-    const tx = transactions.find((t) => t[TRANSACTION.ID] == ctx.id);
+    const tx = transactions.find((t) => t[TRANSACTION.ID] === Number(ctx.id));
     if (!tx) {
         console.error(`Транзакция с id=${ctx.id} не найдена`);
         return;
@@ -323,6 +341,20 @@ function SaveTransaction(id = null) {
     }
 }
 
+function SaveCategory() {
+    const nameInput = document.getElementById("new-category-name");
+    const colorInput = document.getElementById(`category-hex`);
+    const name = nameInput?.value.trim();
+    const hex = colorInput?.value;
+    console.log("SaveCategory called", name, hex);
+    if (name && hex) {
+        AddCategory(name, hex);
+        nameInput.value = "";
+        colorInput.value = "#000000";
+        console.log("Category added");
+    }
+}
+
 function CreateOptionsToFormTransactionCategory(selectId = "form-transaction-category") {
     const select = document.getElementById(selectId);
     if (!select) return;
@@ -330,7 +362,7 @@ function CreateOptionsToFormTransactionCategory(selectId = "form-transaction-cat
     const selectedValue = select.value;
 
     select.innerHTML = `<option value="" disabled selected hidden>Выберите</option>`;
-
+    console.log(categories);
     categories.forEach((cat) => {
         const option = document.createElement("option");
         option.value = cat[CATEGORY.ID];
@@ -452,7 +484,7 @@ function FillCategoryItem(id, isDeleteMode = false) {
     if (!template) return null;
 
     const clone = template.content.cloneNode(true);
-    const container = clone.querySelector(".category-item");
+    const container = clone.querySelector("div");
     if (!container) return null;
     container.dataset.id = id;
 
@@ -789,7 +821,7 @@ function AddCategory(name, hex) {
     UpdateLocalStorageCategories();
     CreateOptionsToFormTransactionCategory();
     CreateOptionsToFormTransactionCategory("category-sort");
-    populateCategorySelect(); // обновляем выпадающий список фильтра
+    // populateCategorySelect(); // обновляем выпадающий список фильтра
 }
 
 function GetTransactionFormValues() {
@@ -909,7 +941,7 @@ function ExcludeCategory(id) {
 function DeleteCategory(id) {
     const numericId = Number(id);
 
-    const index = categories.findIndex((cat) => cat[CATEGORY.ID] === numericId);
+    const index = categories.findIndex((cat) => cat[CATEGORY.ID] === Number(numericId));
     if (index === -1) {
         console.warn(`DeleteCategory: категория с id=${id} не найдена`);
         return;
@@ -918,11 +950,15 @@ function DeleteCategory(id) {
 
     UpdateLocalStorageCategories();
 
-    document.getElementById("legend-category-list")
-        ?.querySelector(`[data-id="${numericId}"]`)?.remove();
+    document
+        .getElementById("legend-category-list")
+        ?.querySelector(`[data-id="${numericId}"]`)
+        ?.remove();
 
-    document.getElementById("filter-categories-list")
-        ?.querySelector(`[data-id="${numericId}"]`)?.remove();
+    document
+        .getElementById("filter-categories-list")
+        ?.querySelector(`[data-id="${numericId}"]`)
+        ?.remove();
 
     CreateOptionsToFormTransactionCategory();
     CreateOptionsToFormTransactionCategory("category-sort");
@@ -976,7 +1012,7 @@ function UpdateFilterCategoryState() {
 }
 
 // ---------ОСНОВНОЙ КОД----------
-const IS_DEBUG = true;
+const IS_DEBUG = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Испольнение кода загрузки окна");
@@ -1252,12 +1288,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const commentSearchBtn = document.getElementById('comment-found');
+    const commentSearchBtn = document.getElementById("comment-found");
     const commentInput = document.querySelector('input[name="comment"]');
     if (commentSearchBtn && commentInput) {
-        commentSearchBtn.addEventListener('click', () => {
+        commentSearchBtn.addEventListener("click", () => {
             filter.comment = commentInput.value.trim();
-            SubFilteringFuntions();  
+            SubFilteringFuntions();
         });
     }
 });

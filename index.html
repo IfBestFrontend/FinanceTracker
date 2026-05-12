@@ -50,10 +50,16 @@
         <template id="category-item">
             <div class="category-item" data-id="">
                 <span data-field="category-name"></span>
-                <button data-action="exclude-category" aria-label="Исключить категорию" class="btn__del">×</button>
+                <button
+                    data-action="exclude-category"
+                    aria-label="Исключить категорию"
+                    class="btn__del"
+                >
+                    ×
+                </button>
             </div>
         </template>
-        <template id="category-legend-item" >
+        <template id="category-legend-item">
             <div class="category-legend-item" data-id="">
                 <span data-field="category-hex"></span>
                 <span data-field="category-name"></span>
@@ -139,22 +145,35 @@
                     <img src="assets/cancel-close-cross-delete_114048.svg" alt="" />
                 </button>
                 <h2 class="settings__title">Настройки</h2>
-                
-                <form class="settings__form" action="" id="">
-                    <div class="settings__add">
+                <div class="">
+                    <div id="settings-category-list"></div>
+                    <form class="settings__form settings__add" action="" id="">
                         <label for="new-category-name">Добавить категорию:</label>
-                        <input name="name" id="new-category-name" type="text" placeholder="Название" />
+                        <input
+                            name="name"
+                            id="new-category-name"
+                            type="text"
+                            placeholder="Название"
+                            required
+                        />
                         <input
                             name="hex"
+                            id="category-hex"
                             type="color"
                             class="choose-color choose-color--color"
                             aria-label="Выбрать цвет"
+                            required
                         />
-                        <button type="submit" class="choose-color" aria-label="Добавить категорию">
+                        <button
+                            type="button"
+                            class="choose-color"
+                            aria-label="Добавить категорию"
+                            onclick="SaveCategory()"
+                        >
                             +
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
 
                 <div class="settings__theme">
                     <div class="theme-toggle">
@@ -165,6 +184,7 @@
                         </label>
                     </div>
                 </div>
+
                 <div class="settings__bottom">
                     <button type="button" class="default-button default-button--secondary">
                         Импорт JSON
@@ -239,7 +259,7 @@
                                 >100000.00₽</span
                             ></span
                         >
-                    </span>
+                    </div>
 
                     <div class="legend-line"></div>
 
