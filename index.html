@@ -50,8 +50,14 @@
         </template>
         <template id="category-item">
             <div type="button" class="category-item" data-id="">
-                <span data-field="name"></span>
+                <span data-field="category-name"></span>
                 <button data-action="" aria-label="" class="btn__del">×</button>
+            </div>
+        </template>
+        <template id="category-legend-item">
+            <div type="button" class="category-item" data-id="">
+                <span data-field="category-hex"></span>
+                <span data-field="category-name">×</span>
             </div>
         </template>
         <dialog id="add-edit-transaction" class="add-edit-transaction">
@@ -254,35 +260,8 @@
 
                     <div class="legend-line"></div>
 
-                    <span class="legend-list">
-                        <span class="legend-item legend-food"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Еда</span></span
-                        >
-                        <span class="legend-item legend-transport"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Транспорт</span></span
-                        >
-                        <span class="legend-item legend-entertainment"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Развлечения</span></span
-                        >
-                        <span class="legend-item legend-health"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Здоровье</span></span
-                        >
-                        <span class="legend-item legend-house"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Жильё</span></span
-                        >
-                        <span class="legend-item legend-custom"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Кастомная</span></span
-                        >
-                        <span class="legend-item legend-custom"
-                            ><span class="legend-dot"></span
-                            ><span class="legend-title">Кастомная</span></span
-                        >
+                    <div id="legend-category-list" class="legend-list">
+                        
                     </span>
                 </div>
             </section>
@@ -352,29 +331,10 @@
                 </div>
 
                 <div class="filter__tags" id="filter-categories-list">
-                    <div class="tag tag--green">Еда <button class="btn__del">×</button></div>
-                    <div class="tag tag--blue">Транспорт <button class="btn__del">×</button></div>
-                    <div class="tag tag--orange">
-                        Развлечения <button class="btn__del">×</button>
-                    </div>
-                    <div type="button" class="tag tag--yellow">
-                        Здоровье <button class="btn__del">×</button>
-                    </div>
-                    <div type="button" class="tag tag--purple">
-                        Жильё <button class="btn__del">×</button>
-                    </div>
-                    <div type="button" class="tag tag--teal">
-                        Кастомная <button class="btn__del__cos">×</button>
-                    </div>
-                    <div type="button" class="tag tag--teal">
-                        Кастомная <button class="btn__del__cos">×</button>
-                    </div>
-                    <div type="button" class="tag tag--teal">
-                        Кастомная <button class="btn__del__cos">×</button>
-                    </div>
+
                 </div>
                 <form class="filter__search" action="">
-                    <input type="text" name="comment" placeholder="Комментарий" />
+                    <input type="text" name="comment" id="input-comment-filter" placeholder="Комментарий" />
                     <button id="comment-found">
                         <img src="assets\Лупа___.png" alt="" />
                     </button>

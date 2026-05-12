@@ -16,7 +16,10 @@ const action = {
     "close-dialog": (ctx) => CloseDialog(ctx.e),
     "open-edit-transaction": (ctx) => OpenEditTransaction(ctx),
     "open-add-transaction": () => OpenAddTransaction(),
-    "delete-transaction": (ctx) => DeleteTransactions(ctx.id),
+    "delete-transaction": (ctx) => {
+        if (confirm("Вы подтверждаете удаление транзакции? Ваше действие будет необратимо"))
+            DeleteTransactions(ctx.id);
+    },
     "toggle-theme": () => ToggleTheme(),
     "show-more": () => ShowMoreTransactions(),
     "open-settings": () => OpenSettings(),
@@ -75,8 +78,8 @@ let filter = {};
 const BASE_CATEGORIES = [
     { [CATEGORY.ID]: 1, [CATEGORY.NAME]: "Еда", [CATEGORY.HEX]: "#1FDD00" },
     { [CATEGORY.ID]: 2, [CATEGORY.NAME]: "Транспорт", [CATEGORY.HEX]: "#6AB4FF" },
-    { [CATEGORY.ID]: 3, [CATEGORY.NAME]: "Здоровье", [CATEGORY.HEX]: "#FFA100" },
-    { [CATEGORY.ID]: 4, [CATEGORY.NAME]: "Развлечения", [CATEGORY.HEX]: "#FFF500" },
+    { [CATEGORY.ID]: 3, [CATEGORY.NAME]: "Здоровье", [CATEGORY.HEX]: "#FFF500" },
+    { [CATEGORY.ID]: 4, [CATEGORY.NAME]: "Развлечения", [CATEGORY.HEX]: "#FFA100" },
     { [CATEGORY.ID]: 5, [CATEGORY.NAME]: "Жильё", [CATEGORY.HEX]: "#976AFF" },
 ];
 
@@ -276,7 +279,7 @@ function OpenEditTransaction(ctx) {
     });
 
     addEditTransactionDialog.showModal();
-    UpdateCategorySelectState(); 
+    UpdateCategorySelectState();
 }
 
 function OpenAddTransaction() {
@@ -414,67 +417,66 @@ function FillTransactionCard(tr) {
 }
 
 function FillCategoryLegendItem(id) {
-    const template = document.getElementById('category-legend-item');
+    const template = document.getElementById("category-legend-item");
     if (!template) return null;
 
     const clone = template.content.cloneNode(true);
-    const container = clone.querySelector('.category-item');
+    const container = clone.querySelector(".category-item");
     if (!container) return null;
 
     container.dataset.id = id;
 
-    const category = categories.find(cat => cat[CATEGORY.ID] === id);
+    const category = categories.find((cat) => cat[CATEGORY.ID] === id);
     if (!category) return null;
 
     const nameSpan = container.querySelector('[data-field="category-name"]');
     if (nameSpan) nameSpan.textContent = category[CATEGORY.NAME];
 
     const hexSpan = container.querySelector('[data-field="category-hex"]');
-    if (hexSpan) hexSpan.style.backgroundColor = category[CATEGORY.HEX] || '#CCCCCC';
+    if (hexSpan) hexSpan.style.backgroundColor = category[CATEGORY.HEX] || "#CCCCCC";
 
     return clone;
 }
 
-
 function getContrastColor(hex) {
-    hex = hex.replace('#', '');
+    hex = hex.replace("#", "");
     const r = parseInt(hex.slice(0, 2), 16);
     const g = parseInt(hex.slice(2, 4), 16);
     const b = parseInt(hex.slice(4, 6), 16);
     const brightness = (r + g + b) / 3;
-    return brightness >= 128 ? '#000000' : '#FFFFFF';
+    return brightness >= 128 ? "#000000" : "#FFFFFF";
 }
 
 function FillCategoryItem(id, isDeleteMode = false) {
-    const template = document.getElementById('category-item');
+    const template = document.getElementById("category-item");
     if (!template) return null;
 
     const clone = template.content.cloneNode(true);
-    const container = clone.querySelector('.category-item');
+    const container = clone.querySelector(".category-item");
     if (!container) return null;
     container.dataset.id = id;
 
-    const category = categories.find(cat => cat[CATEGORY.ID] === id);
+    const category = categories.find((cat) => cat[CATEGORY.ID] === id);
     if (!category) return null;
 
     const nameSpan = container.querySelector('[data-field="category-name"]');
     if (nameSpan) nameSpan.textContent = category[CATEGORY.NAME];
 
-    const bgColor = category[CATEGORY.HEX] || '#CCCCCC';
+    const bgColor = category[CATEGORY.HEX] || "#CCCCCC";
     container.style.backgroundColor = bgColor;
     container.style.color = getContrastColor(bgColor);
 
-    const button = container.querySelector('button');
+    const button = container.querySelector("button");
     if (button) {
-        const isBase = (id >= 1 && id <= 5);
+        const isBase = id >= 1 && id <= 5;
         if (isDeleteMode) {
             if (isBase) {
                 button.remove();
             } else {
-                button.dataset.action = 'delete-category';
+                button.dataset.action = "delete-category";
             }
         } else {
-            button.dataset.action = 'exclude-category';
+            button.dataset.action = "exclude-category";
         }
     }
 
@@ -622,6 +624,8 @@ function Filtering() {
                 compareResult = a[TRANSACTION.DATE] - b[TRANSACTION.DATE];
                 break;
         }
+
+        // ordering: true = asc (оставляем как есть), false = desc (инвертируем)
         return ordering ? compareResult : -compareResult;
     });
 
@@ -895,7 +899,7 @@ function StateLog() {
 }
 
 // ---------ОСНОВНОЙ КОД----------
-const IS_DEBUG = false  ;
+const IS_DEBUG = true;
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Испольнение кода загрузки окна");
@@ -949,7 +953,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const typeRadios = document.querySelectorAll('input[name="type"]');
-    typeRadios.forEach(radio => {
+    typeRadios.forEach((radio) => {
         radio.addEventListener("change", UpdateCategorySelectState);
     });
 
@@ -1150,7 +1154,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Сбрасываем выбор, чтобы не передавалось старое значение
             categorySelect.value = "";
             // Показываем заглушку
-            const placeholder = categorySelect.querySelector('option[data-placeholder]');
+            const placeholder = categorySelect.querySelector("option[data-placeholder]");
             if (placeholder) placeholder.selected = true;
         } else if (selectedType === "income") {
             categorySelect.disabled = false;

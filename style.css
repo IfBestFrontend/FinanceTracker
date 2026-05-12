@@ -9,16 +9,15 @@
     --sub-button--bg-color: none;
     --sub-button--border-color: #030f0f80;
     --input--border-color: var(--sub-button--border-color);
-    --filter-input-bg: #FFFFFF;
-    --filter-input-border: #CCCCCC;
-    --filter-input-color: #030F0F;
+    --filter-input-bg: #ffffff;
+    --filter-input-border: #cccccc;
+    --filter-input-color: #030f0f;
 
     /* B2 примерно равен прозрачности 70 (~69.8) */
     --sub-font--color: #030f0fb2;
     --font--color: #030f0f;
 
     --font--size: 18px;
-
 
     /*  */
     --header-height: 75px;
@@ -29,16 +28,17 @@
 
     --checkbox--color: var(--font--color);
 
+    --income-color: #6ab4ff;
+    --expense-color: #ff3333;
     /* sub-цвета (временно) */
-    --color-food: #1FDD00;
-    --color-transport: #6AB4FF;
-    --color-entertainment: #FFA100;
-    --color-health: #FFF500;
-    --color-house: #976AFF;
-    --color-custom: #0B4539;
-    --income-color: #6AB4FF;
-    --expense-color: #FF3333;
-
+    /* --color-food: #1fdd00;
+    --color-transport: #6ab4ff;
+    --color-entertainment: #ffa100;
+    --color-health: #fff500;
+    --color-house: #976aff;
+    --color-custom: #0b4539;
+    --income-color: #6ab4ff;
+    --expense-color: #ff3333; */
 }
 
 body.dark {
@@ -52,9 +52,9 @@ body.dark {
     --font--color: #d9d9d9;
     --input--border-color: var(--sub-button--border-color);
     --checkbox--color: var(--font--color);
-    --filter-input-bg: #021A1A;
-    --filter-input-border: #D9D9D980;
-    --filter-input-color: #D9D9D9;
+    --filter-input-bg: #021a1a;
+    --filter-input-border: #d9d9d980;
+    --filter-input-color: #d9d9d9;
 
     --font--size: 18px;
 }
@@ -141,6 +141,10 @@ select,
 option {
     font-size: 18px !important;
     color: var(--sub-font--color) !important;
+    cursor: pointer;
+}
+label[for="ordering-sort"] {
+    cursor: pointer;
 }
 
 input[type="date"] {
@@ -295,7 +299,7 @@ input[type="date"] {
 .filter__date {
     height: 32px;
     width: auto;
-    min-width: 110px;
+    /* min-width: 110px; */
     padding: 0 6px;
     border-radius: 10px;
     border: 1px solid var(--filter-input-border);
@@ -319,9 +323,10 @@ input[type="date"] {
     margin-left: auto;
 }
 
-label.ordering-sort {}
+label.ordering-sort {
+}
 
-#ordering-sort:checked+label.ordering-sort {
+#ordering-sort:checked + label.ordering-sort {
     transform: scale(-1, -1);
 }
 
@@ -379,33 +384,6 @@ label.ordering-sort {}
     font-size: 16px;
 }
 
-/* Цвета */
-/* Временная затычка */
-.tag--green {
-    background: #43e81f;
-}
-
-.tag--blue {
-    background: #62a8ff;
-}
-
-.tag--orange {
-    background: #ffad1f;
-}
-
-.tag--yellow {
-    background: #ffe81f;
-}
-
-.tag--purple {
-    background: #a76cff;
-}
-
-.tag--teal {
-    background: #0f6f66;
-    color: #eaffff;
-}
-
 /* Поиск */
 .filter__search {
     display: flex;
@@ -415,7 +393,7 @@ label.ordering-sort {}
 
 .filter__search input {
     margin-top: 10px;
-    width: 1020px;
+    flex-grow: 1;
     height: 36px;
     padding: 0 10px;
     border-radius: 10px;
@@ -444,12 +422,17 @@ label.ordering-sort {}
     /* width: min(1080px, calc(100% - 32px)); */
     width: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 .transaction-list {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 20px;
 }
 
 .transaction {
@@ -577,7 +560,10 @@ label.ordering-sort {}
     overflow: hidden;
     display: none;
     max-height: 200px;
-    transition: max-height 0.3s ease, opacity 0.2s ease, margin 0.2s ease;
+    transition:
+        max-height 0.3s ease,
+        opacity 0.2s ease,
+        margin 0.2s ease;
     opacity: 1;
     margin-bottom: 5px;
 }
@@ -832,7 +818,6 @@ label.ordering-sort {}
     background-color: var(--color-custom);
 }
 
-
 /* для settings */
 
 .dialog-conteiner:has(.settings) {
@@ -898,7 +883,7 @@ label.ordering-sort {}
 
 .settings .legend-custom {
     background-color: var(--color-custom);
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .settings .legend-dot {
@@ -1135,7 +1120,10 @@ label.ordering-sort {}
     --slider-left: 5px;
     content: "";
     position: absolute;
-    top: calc(var(--slider--height) / 2 - var(--slider-circle--heigth) / 2 - var(--slider--border-size) / 2);
+    top: calc(
+        var(--slider--height) / 2 - var(--slider-circle--heigth) / 2 - var(--slider--border-size) /
+            2
+    );
     left: var(--slider-left);
     width: var(--slider-circle--width);
     height: var(--slider-circle--heigth);
@@ -1144,11 +1132,13 @@ label.ordering-sort {}
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.theme-toggle input:checked+label .toggle-slider::before {
-    transform: translateX(calc(var(--slider--width) - var(--slider-circle--width) - var(--slider-left) * 2));
+.theme-toggle input:checked + label .toggle-slider::before {
+    transform: translateX(
+        calc(var(--slider--width) - var(--slider-circle--width) - var(--slider-left) * 2)
+    );
 }
 
-#dark-theme-toggle:focus-visible+.toggle-slider {
+#dark-theme-toggle:focus-visible + .toggle-slider {
     outline: 1px solid var(--checkbox--color);
     outline-width: 1px;
 }
@@ -1157,7 +1147,6 @@ label.ordering-sort {}
     display: flex;
     gap: 8px;
 }
-
 
 .type-btn {
     padding: 10px 20px;
@@ -1178,23 +1167,20 @@ label.ordering-sort {}
 }
 
 /* Исправить на соответвующее макету */
-#form-transaction-type-income:checked+label.type-btn,
-#form-transaction-type-expense:checked+label.type-btn {
+#form-transaction-type-income:checked + label.type-btn,
+#form-transaction-type-expense:checked + label.type-btn {
     border-color: #4caf50;
-    /* или твой акцентный цвет */
-    /* background: #4CAF50; */
     color: white;
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
 
-#form-transaction-type-expense:checked+label.type-btn {
+#form-transaction-type-expense:checked + label.type-btn {
     border-color: #f44336;
     /* background: #f44336; */
     box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
 }
 
-/* Опционально: отключаем курсор-текст при выделении */
 .type-btn {
     -webkit-user-select: none;
     -moz-user-select: none;
