@@ -24,7 +24,7 @@ const action = {
     "show-more": () => ShowMoreTransactions(),
     "open-settings": () => OpenSettings(),
     "exclude-category": (ctx) => ExcludeCategory(ctx.id),
-    "delete-category": () => DeleteCategory(),
+    "delete-category": (ctx) => DeleteCategory(ctx.id),
     "show-comment": (ctx) => ToggleComment(ctx.id),
     "save-transaction": (ctx) => {
         SaveTransaction(ctx.id);
@@ -906,7 +906,31 @@ function ExcludeCategory(id) {
     SubFilteringFuntions();
 }
 
-function DeleteCategory() {}
+function DeleteCategory(id) {
+    const numericId = Number(id);
+
+    const index = categories.findIndex((cat) => cat[CATEGORY.ID] === numericId);
+    if (index === -1) {
+        console.warn(`DeleteCategory: категория с id=${id} не найдена`);
+        return;
+    }
+    categories.splice(index, 1);
+
+    UpdateLocalStorageCategories();
+
+    document.getElementById("legend-category-list")
+        ?.querySelector(`[data-id="${numericId}"]`)?.remove();
+
+    document.getElementById("filter-categories-list")
+        ?.querySelector(`[data-id="${numericId}"]`)?.remove();
+
+    CreateOptionsToFormTransactionCategory();
+    CreateOptionsToFormTransactionCategory("category-sort");
+
+    filter["categories"] = filter["categories"].filter((catId) => catId !== numericId);
+
+    SubFilteringFuntions();
+}
 
 //Отладка
 function StateLog() {
