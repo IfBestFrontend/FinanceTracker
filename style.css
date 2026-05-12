@@ -241,7 +241,7 @@ input[type="date"] {
     border-radius: 15px;
 }
 
-.add-edit-transaction button[type="submit"]{
+.add-edit-transaction button[type="submit"] {
     background-color: var(--accent-button--bg-color);
     color: #030f0f;
 }
@@ -683,7 +683,7 @@ label.ordering-sort {
     padding: 10px;
 }
 
-.settings button:disabled{
+.settings button:disabled {
     background-color: var(--settings--bg-color);
     color: grey;
     border: 1px solid gray;
@@ -958,7 +958,7 @@ label.ordering-sort {
     vertical-align: middle;
 }
 
-.settings__all-category{
+.settings__all-category {
     display: flex;
     gap: 15px;
     width: 100%;
@@ -991,7 +991,6 @@ label.ordering-sort {
     color: var(--font--color);
     font-size: 20px;
 }
-
 
 /*  */
 /*  */
@@ -1044,7 +1043,6 @@ label.ordering-sort {
     min-width: 0;
     overflow-wrap: anywhere;
 }
-
 
 .close-dialog-button img {
     width: 18px;
@@ -1226,4 +1224,11 @@ label.ordering-sort {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+.category-legend-item span[data-field="category-hex"] {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50px;
 }

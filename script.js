@@ -26,9 +26,9 @@ const action = {
     "exclude-category": (ctx) => ExcludeCategory(ctx.id),
     "delete-category": (ctx) => {
         const tr = transactions.find((tr) => tr[TRANSACTION.CATEGORY] === Number(ctx.id));
-        console.log(tr)
+        console.log(tr);
         if (tr) {
-            alert("Невозможно удалить Категрию! Для начала удалите связанные транзакции")
+            alert("Невозможно удалить Категрию! Для начала удалите связанные транзакции");
         } else {
             if (confirm("Вы подтверждаете удаление транзакции? Ваше действие будет необратимо"))
                 DeleteCategory(ctx.id);
@@ -954,9 +954,18 @@ function DeleteCategory(id) {
     categories.splice(index, 1);
     UpdateLocalStorageCategories();
 
-    document.getElementById("legend-category-list")?.querySelector(`[data-id="${numericId}"]`)?.remove();
-    document.getElementById("filter-categories-list")?.querySelector(`[data-id="${numericId}"]`)?.remove();
-    document.getElementById("settings-category-list")?.querySelector(`[data-id="${numericId}"]`)?.remove();
+    document
+        .getElementById("legend-category-list")
+        ?.querySelector(`[data-id="${numericId}"]`)
+        ?.remove();
+    document
+        .getElementById("filter-categories-list")
+        ?.querySelector(`[data-id="${numericId}"]`)
+        ?.remove();
+    document
+        .getElementById("settings-category-list")
+        ?.querySelector(`[data-id="${numericId}"]`)
+        ?.remove();
 
     CreateOptionsToFormTransactionCategory();
     CreateOptionsToFormTransactionCategory("category-sort");
