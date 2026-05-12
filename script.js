@@ -413,6 +413,29 @@ function FillTransactionCard(tr) {
     return clone;
 }
 
+function FillCategoryLegendItem(id) {
+    const template = document.getElementById('category-legend-item');
+    if (!template) return null;
+
+    const clone = template.content.cloneNode(true);
+    const container = clone.querySelector('.category-item');
+    if (!container) return null;
+
+    container.dataset.id = id;
+
+    const category = categories.find(cat => cat[CATEGORY.ID] === id);
+    if (!category) return null;
+
+    const nameSpan = container.querySelector('[data-field="category-name"]');
+    if (nameSpan) nameSpan.textContent = category[CATEGORY.NAME];
+
+    const hexSpan = container.querySelector('[data-field="category-hex"]');
+    if (hexSpan) hexSpan.style.backgroundColor = category[CATEGORY.HEX] || '#CCCCCC';
+
+    return clone;
+}
+
+
 function getContrastColor(hex) {
     hex = hex.replace('#', '');
     const r = parseInt(hex.slice(0, 2), 16);
